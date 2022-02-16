@@ -24,8 +24,6 @@ public class MovingPlatformWindow : EditorWindow
 {
     public Vector3 firstPosition;
     public Vector3 secondPosition;
-    public float travelTime;
-    public float waitTime;
     public float speed;
     
     [MenuItem("JB Tools/ Moving Platform Tool %&m")]
@@ -37,13 +35,11 @@ public class MovingPlatformWindow : EditorWindow
     void OnGUI()
     {
         
-        EditorGUILayout.PrefixLabel("Choose an object, two locations and timings");
+        EditorGUILayout.PrefixLabel("Moving object tool");
         firstPosition = EditorGUILayout.Vector3Field("Starting Position", firstPosition);
         secondPosition = EditorGUILayout.Vector3Field("Ending Position", secondPosition);
-        travelTime = EditorGUILayout.FloatField("Travel Time", travelTime);
-        waitTime = EditorGUILayout.FloatField("Wait Time", waitTime);
         speed = EditorGUILayout.FloatField("Speed", speed);
-        if ( GUILayout.Button("Apply movement to selected object"))
+        if ( GUILayout.Button("Add component selected object"))
         {
             if (!Selection.activeGameObject)
             {
@@ -66,9 +62,8 @@ public class MovingPlatformWindow : EditorWindow
         MoverOverTime mover = Selection.activeGameObject.GetComponent<MoverOverTime>();
         mover.positionOne = firstPosition;
         mover.positionTwo = secondPosition;
-        mover.travelTime = travelTime;
-        mover.waitTime = waitTime;
         mover.speed = speed;
+        Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
     }
 }
 

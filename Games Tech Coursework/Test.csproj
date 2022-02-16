@@ -53,8 +53,8 @@
     <UnityVersion>2020.3.19f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scenes\Scripts\Editor\JBTools.cs" />
     <Compile Include="Assets\Scenes\Scripts\MoverOverTime.cs" />
+    <Compile Include="Assets\Scenes\Scripts\Editor\JBTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scenes\Scripts\Test.asmdef" />
