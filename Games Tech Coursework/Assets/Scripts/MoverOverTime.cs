@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+[ExecuteAlways]
 public class MoverOverTime : MonoBehaviour
 {
+    public GameObject posOne;
+    public GameObject posTwo;
     public Vector3 positionOne;
     public Vector3 positionTwo;
     float distance;
@@ -21,8 +23,13 @@ public class MoverOverTime : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            MovePlatform(positionOne,positionTwo);
-        
+
+        if (Application.isPlaying)
+        {
+            positionOne = posOne.transform.position;
+            positionTwo = posTwo.transform.position;
+            MovePlatform(positionOne, positionTwo);
+        }
     }
     
     private void MovePlatform(Vector3 pointA, Vector3 pointB)
@@ -31,9 +38,11 @@ public class MoverOverTime : MonoBehaviour
         transform.position = Vector3.Lerp(pointA, pointB, time);
 
     }
-    //[ExecuteAlways]
+    
     void OnDrawGizmos()
     {
+        positionOne = posOne.transform.position;
+        positionTwo = posTwo.transform.position;
         if (displayPreviews)
         {
             //Gizmos.matrix = Matrix4x4.TRS(positionOne, transform.rotation, transform.lossyScale);
@@ -58,7 +67,7 @@ public class MoverOverTime : MonoBehaviour
         }
     }
     
-
+    
 
     
 
