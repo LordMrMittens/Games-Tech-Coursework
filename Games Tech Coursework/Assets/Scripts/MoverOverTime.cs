@@ -55,11 +55,11 @@ public class MoverOverTime : MonoBehaviour
             float gizmoTime = Mathf.PingPong((float)(EditorApplication.timeSinceStartup * (speed / Mathf.Abs(distance))), 1);
             Vector3 gizmoPreviewPosition = Vector3.Lerp(positionOne, positionTwo, gizmoTime);
             Gizmos.DrawWireCube(gizmoPreviewPosition, transform.localScale);
-            /*            if (!Application.isPlaying)
-                        {
-                            EditorApplication.QueuePlayerLoopUpdate();
-                            SceneView.RepaintAll();
-                        }*/
+       /*     if (!Application.isPlaying)
+            {
+                EditorApplication.QueuePlayerLoopUpdate();
+                SceneView.RepaintAll();
+            }*/
             if (Event.current.type == EventType.Repaint)
             {
                 SceneView.RepaintAll();

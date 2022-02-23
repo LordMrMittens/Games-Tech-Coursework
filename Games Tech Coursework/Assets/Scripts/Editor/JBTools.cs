@@ -45,10 +45,11 @@ public class MovingPlatformWindow : EditorWindow
             {
                 Debug.Log("No Object Selected!");
             }
-            else if (!Selection.activeGameObject.GetComponent<MoverOverTime>()&&!Selection.activeGameObject.GetComponentInChildren<MoverOverTime>())
+            else if (!Selection.activeGameObject.GetComponent<MoverOverTime>())
             {
                 Selection.activeGameObject.AddComponent<MoverOverTime>();
                 CreateEmptyGameObjects();
+                
             }
             else
             {
@@ -85,7 +86,7 @@ public class MovingPlatformWindow : EditorWindow
         mover.positionTwo = secondPosition;
         mover.speed = speed;
         Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
-        TryAssignValues();
+        //TryAssignValues();
         var master = new GameObject();
         master.transform.position = mover.transform.position;
         master.name = "MovingObject";
