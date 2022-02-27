@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MovementController : MonoBehaviour
 {
+    /// <summary>
+    /// can we draw gizmos to display the rotation limits?(easy-ish)
+    /// </summary>
+   
     public float Speed;
     float z;
     // Start is called before the first frame update

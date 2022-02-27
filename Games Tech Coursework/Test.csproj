@@ -58,6 +58,11 @@
     <Compile Include="Assets\Scripts\Editor\JBTools.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
+    <Compile Include="Assets\Scripts\Hazard.cs" />
+    <Compile Include="Assets\Scripts\Editor\PointCounter.cs" />
+    <Compile Include="Assets\Scripts\Jump.cs" />
+    <Compile Include="Assets\Scripts\Editor\Collections.cs" />
+    <Compile Include="Assets\Scripts\Bouncers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />
