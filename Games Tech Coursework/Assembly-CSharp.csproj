@@ -53,7 +53,7 @@
     <UnityVersion>2020.3.19f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scenes\Scripts\MoverOverTime.cs" />
+    <Compile Include="Assets\HazardHitDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -721,9 +721,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="NewAssembly.csproj">
-      <Project>{5B8D3E06-FA8F-CAF6-D27E-13DEE8DAAF1D}</Project>
-      <Name>NewAssembly</Name>
+    <ProjectReference Include="Test.csproj">
+      <Project>{394CA95D-EC7C-F535-C991-77F18D3DE43E}</Project>
+      <Name>Test</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
