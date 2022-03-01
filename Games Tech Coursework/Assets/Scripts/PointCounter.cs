@@ -5,22 +5,8 @@ using UnityEditor;
 public class PointCounter : MonoBehaviour
 {
     public int totalPoints;
-    // Start is called before the first frame update
-    /// <summary>
-    /// create a tool that allows a developet to see how many points the player can earn in one scene and to be able to modify the points value?
-    /// it can also create a checklist of things required on scene. (medium)
-    /// </summary>
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+[ExecuteAlways]
 [CustomEditor(typeof(PointCounter))]
 
 class pointCounterHandles : Editor
@@ -30,18 +16,51 @@ class pointCounterHandles : Editor
         PointCounter pc = (PointCounter)target;
         Handles.BeginGUI();
         {
-            int NumberOfPickups =0;
+            int numberOfPickups = 0;
+            int numberOfHazards = 0;
+            int numberOfBumpers = 0;
+            int numberOfPlatforms = 0;
+            bool hasExit = false;
+            bool hasPlayer = false;
             Pickup[] pickups = GameObject.FindObjectsOfType<Pickup>();
-            if (pickups.Length != NumberOfPickups)
-            {
-                pc.totalPoints = 0;
-                NumberOfPickups = pickups.Length;
-                foreach (Pickup pickup in pickups)
-                {
-                    pc.totalPoints += pickup.value;
-                }
-            }
+            Hazard[] hazards = GameObject.FindObjectsOfType<Hazard>();
+            Bumper[] bumpers = GameObject.FindObjectsOfType<Bumper>();
+            MoverOverTime[] platforms = GameObject.FindObjectsOfType<MoverOverTime>();
+            numberOfPickups = CheckNumberOfItems(pc, numberOfPickups, pickups);
+            numberOfHazards = CheckNumberOfItems(pc, numberOfHazards, hazards);
+            numberOfBumpers = CheckNumberOfItems(pc, numberOfBumpers, bumpers);
+            numberOfPlatforms = CheckNumberOfItems(pc, numberOfPlatforms, platforms);
+            hasPlayer = GameObject.FindObjectOfType<Jump>();
+            hasExit = GameObject.FindObjectOfType<LevelExitTrigger>();
             GUILayout.Label("Total points available in scene: " + pc.totalPoints);
+            GUILayout.Label("Total hazards in scene: " + numberOfHazards);
+            GUILayout.Label("Total bumpers in scene: " + numberOfBumpers);
+            GUILayout.Label("Total platforms in scene: " + numberOfPlatforms);
+            GUILayout.Label("Player present in scene: " + hasPlayer);
+            GUILayout.Label("Exit present in scene: " + hasPlayer);
         }
+    }
+    private static int CheckNumberOfItems(PointCounter pc, int numberOfPickups, Pickup[] pickups)
+    {
+        
+        if (pickups.Length != numberOfPickups)
+        {
+            pc.totalPoints = 0;
+            numberOfPickups = pickups.Length;
+            foreach (Pickup pickup in pickups)
+            {
+                pc.totalPoints += pickup.value;
+            }
+        }
+        return numberOfPickups;
+    }
+    private static int CheckNumberOfItems(PointCounter pc, int numberOfItems, Component[] Items)
+    {
+        if (Items.Length != numberOfItems)
+        {
+            numberOfItems = Items.Length;
+        }
+
+        return numberOfItems;
     }
 }

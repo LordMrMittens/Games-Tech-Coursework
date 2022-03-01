@@ -82,7 +82,7 @@ public class jumpHandles : Editor
         Jump ju = (Jump)target;
         EditorGUI.BeginChangeCheck();
         Handles.DrawWireArc(ju.transform.position, ju.transform.forward,ju.transform.right, 180, ju.jumpHeight-ju.circleCollider.radius);
-        Handles.Label(ju.transform.position + Vector3.up * (ju.jumpHeight + .5f), "Approximate max jump height");
+        Handles.Label(ju.transform.position + Vector3.up * (ju.jumpHeight), "Approximate max jump height");
         Handles.color = Color.red;
         float newJumpHeight = (float)Handles.ScaleValueHandle(ju.jumpHeight, ju.transform.position + ju.transform.up * (ju.jumpHeight - ju.circleCollider.radius), Quaternion.identity, 1, Handles.CircleHandleCap, 1);
         if (EditorGUI.EndChangeCheck())

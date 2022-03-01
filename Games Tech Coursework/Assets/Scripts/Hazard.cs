@@ -5,7 +5,8 @@ using UnityEditor;
 public class Hazard : MonoBehaviour
 {
     /// <summary>
-    /// create a tool that shows the area of effect of attacks and can modify their range and timings (easey)
+    /// create a tool that shows the area of effect of attacks and can modify their range and timings (easy) with sliders?
+    /// 
     /// display angry face and green happy face to dsplay attack?
     /// </summary>
     public float attackRadius;
@@ -17,7 +18,27 @@ public class Hazard : MonoBehaviour
     public bool isAttacking;
     public bool displayGizmos;
     public GameObject hazardObject;
-    
+    public Gradient gradient;
+    GradientColorKey[] colorkey = new GradientColorKey[3];
+    GradientAlphaKey[] alphakey = new GradientAlphaKey[3];
+    float gradientChargeTimer = 0;
+    private void Start()
+    {
+   
+        colorkey[0].color = neutral;
+        colorkey[0].time = 0f;
+        colorkey[1].color = charging;
+        colorkey[1].time = .5f;
+        colorkey[2].color = attacking;
+        colorkey[2].time = 1f;
+        alphakey[0].alpha = 1;
+        alphakey[0].time = 0f;
+        alphakey[1].alpha = 1;
+        alphakey[1].time = .5f;
+        alphakey[2].alpha = 1;
+        alphakey[2].time = 1f;
+        gradient.SetKeys(colorkey, alphakey);
+    }
     void Update()
     {
         if (isAttacking)
@@ -26,16 +47,18 @@ public class Hazard : MonoBehaviour
             attackTimer += Time.deltaTime;
             if (attackTimer > timeAttacking)
             {
-                
                 downtimeTimer = 0;
+                gradientChargeTimer = 0;
                 isAttacking = false;
-                
             }
         } else
         {
             hazardObject.SetActive(false);
             downtimeTimer += Time.deltaTime;
-            if(downtimeTimer > timeBetweenAttacks)
+            gradientChargeTimer += Time.deltaTime / 8;
+            float t = Mathf.Lerp(0, 1, gradientChargeTimer);
+            gameObject.GetComponent<SpriteRenderer>().color = gradient.Evaluate(t);
+            if (downtimeTimer > timeBetweenAttacks)
             {
                 attackTimer = 0;
                 isAttacking = true;

@@ -64,6 +64,9 @@ public class MoverOverTimeHandles : Editor
         {
             Tools.hidden = true;
         }
+        else {
+            Tools.hidden = false;
+                }
         if (!Application.isPlaying)
         {
             MoverOverTime mot = (MoverOverTime)target;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 public class GameManager : MonoBehaviour
 {
     public float score;
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text timerText;
     float secondsCounter;
     float minutesCounter;
+    
     private void Start()
     {
         TGM = this;

@@ -5,20 +5,6 @@ using UnityEditor;
 
 public class JBTools : MonoBehaviour
 {
-    [MenuItem("JB Tools/First Tool %&n", false)]
-
-    static void CreateMovingPlatform()
-    {
-
-    }
-    [MenuItem("JB Tools/First Tool", true)]
-    static bool CreateMovingPlatformValidate()
-    {
-
-        return Selection.activeGameObject != null;
-    }
-    // Start is called before the first frame update
-
 }
 public class MovingPlatformWindow : EditorWindow
 {

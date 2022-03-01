@@ -6,17 +6,7 @@ public class LevelExitTrigger : MonoBehaviour
 {
     [SerializeField] float exitTime;
     float exitTimer = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField]int sceneToLoad;
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.tag == "Player")
@@ -24,7 +14,9 @@ public class LevelExitTrigger : MonoBehaviour
             exitTimer += Time.deltaTime;
             if (exitTimer > exitTime)
             {
-                Debug.Log("Level passed");
+                exitTimer = -5;
+                GameManager.TGM.LoadScene(sceneToLoad);
+                
             }
         }
     }

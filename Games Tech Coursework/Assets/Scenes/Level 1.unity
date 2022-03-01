@@ -1458,8 +1458,8 @@ MonoBehaviour:
   jumpHeight: 2.7842646
   jumpCharge: 0
   neutral: {r: 1, g: 1, b: 1, a: 0}
-  charging: {r: 1, g: 0.9844571, b: 0.08018869, a: 0}
-  jump: {r: 1, g: 0, b: 0, a: 1}
+  charging: {r: 0.07843137, g: 1, b: 0.87969214, a: 0}
+  jump: {r: 0, g: 0.100815535, b: 1, a: 1}
   circleCollider: {fileID: 347487780}
   gradient:
     serializedVersion: 2
@@ -4716,7 +4716,7 @@ Transform:
   m_GameObject: {fileID: 1007642055}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.3117332, y: 3.3117332, z: 3.3117332}
+  m_LocalScale: {x: 3.1291535, y: 3.1291535, z: 3.1291535}
   m_Children: []
   m_Father: {fileID: 1480275867}
   m_RootOrder: 0
@@ -5591,14 +5591,43 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRadius: 3.3117332
-  timeBetweenAttacks: 2
+  timeBetweenAttacks: 8
   timeAttacking: 1.08
-  neutral: {r: 0, g: 0, b: 0, a: 0}
-  charging: {r: 0, g: 0, b: 0, a: 0}
-  attacking: {r: 0, g: 0, b: 0, a: 0}
+  neutral: {r: 1, g: 1, b: 1, a: 1}
+  charging: {r: 1, g: 0.9588941, b: 0.5235849, a: 1}
+  attacking: {r: 0.5566038, g: 0.10028844, b: 0, a: 1}
   isAttacking: 0
   displayGizmos: 0
   hazardObject: {fileID: 433465545}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!212 &1318425431
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6500,15 +6529,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dba1f25289e4954a8425b4fb31da17d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRadius: 3.3117332
-  timeBetweenAttacks: 2
+  attackRadius: 3.1291535
+  timeBetweenAttacks: 8
   timeAttacking: 1.08
-  neutral: {r: 0, g: 0, b: 0, a: 0}
-  charging: {r: 0, g: 0, b: 0, a: 0}
-  attacking: {r: 0, g: 0, b: 0, a: 0}
+  neutral: {r: 1, g: 1, b: 1, a: 1}
+  charging: {r: 1, g: 0.9588941, b: 0.5235849, a: 1}
+  attacking: {r: 0.5566038, g: 0.10028844, b: 0, a: 1}
   isAttacking: 0
   displayGizmos: 0
   hazardObject: {fileID: 1007642055}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
 --- !u!212 &1480275870
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7261,6 +7319,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exitTime: 2
+  sceneToLoad: 2
 --- !u!1 &1578115133
 GameObject:
   m_ObjectHideFlags: 0

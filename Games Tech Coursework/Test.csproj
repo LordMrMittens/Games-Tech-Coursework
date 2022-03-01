@@ -55,17 +55,18 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\MoverOverTime.cs" />
     <Compile Include="Assets\Scripts\Bumper.cs" />
+    <Compile Include="Assets\Scripts\Detector.cs" />
+    <Compile Include="Assets\Scripts\HazardHitDetector.cs" />
     <Compile Include="Assets\Scripts\MovementController.cs" />
     <Compile Include="Assets\Scripts\Jump.cs" />
     <Compile Include="Assets\Scripts\Editor\JBTools.cs" />
     <Compile Include="Assets\Scripts\Hazard.cs" />
+    <Compile Include="Assets\Scripts\LevelExitTrigger.cs" />
     <Compile Include="Assets\Scripts\Editor\Collections.cs" />
     <Compile Include="Assets\Scripts\PointCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
-    <Compile Include="Assets\Scripts\Detector.cs" />
-    <Compile Include="Assets\Scripts\HazardHitDetector.cs" />
-    <Compile Include="Assets\Scripts\LevelExitTrigger.cs" />
+    <Compile Include="Assets\Scripts\Editor\AlignToPivot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />
