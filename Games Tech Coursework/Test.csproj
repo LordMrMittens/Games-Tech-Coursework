@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
     <Compile Include="Assets\Scripts\Editor\AlignToPivot.cs" />
+    <Compile Include="Assets\Scripts\Editor\JBAudioUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />
