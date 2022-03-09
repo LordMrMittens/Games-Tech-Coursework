@@ -9,6 +9,7 @@ public class HazardHitDetector : MonoBehaviour
         if (collision.tag == "Player")
         {
             collision.gameObject.SetActive(false);
+            GameManager.TGM.playerIsalive = false;
         }
     }
 }

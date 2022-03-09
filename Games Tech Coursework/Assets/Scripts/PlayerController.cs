@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-public class Jump : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float jumpHeight;
     public float jumpCharge;
@@ -74,12 +74,12 @@ public class Jump : MonoBehaviour
         }
     }
 }
-[CustomEditor(typeof(Jump)), CanEditMultipleObjects]
+[CustomEditor(typeof(PlayerController)), CanEditMultipleObjects]
 public class jumpHandles : Editor
 {
     private void OnSceneGUI()
     {
-        Jump ju = (Jump)target;
+        PlayerController ju = (PlayerController)target;
         EditorGUI.BeginChangeCheck();
         Handles.DrawWireArc(ju.transform.position, ju.transform.forward,ju.transform.right, 180, ju.jumpHeight-ju.circleCollider.radius);
         Handles.Label(ju.transform.position + Vector3.up * (ju.jumpHeight), "Approximate max jump height");

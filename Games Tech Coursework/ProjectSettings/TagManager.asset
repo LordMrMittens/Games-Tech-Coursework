@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - EntryDoor
+  - ExitDoor
+  - Bumper
+  - Hazard
+  - MovingPlatform
+  - Points
+  - LevelRotationPoint
   layers:
   - Default
   - TransparentFX

@@ -31,7 +31,7 @@ public class bumperHandles : Editor
         Bumper bump = (Bumper)target;
         EditorGUI.BeginChangeCheck();
         Handles.color = Color.blue;
-        Handles.DrawWireDisc(bump.transform.position, bump.transform.forward, bump.bumpPower/1f);
+        Handles.DrawWireDisc(bump.transform.position, bump.transform.forward, bump.bumpPower);
         Handles.Label(bump.transform.position + Vector3.up * (bump.bumpPower + .5f), "Approximate bump power");
         Handles.color = Color.red;
         float newBumpPower = (float)Handles.ScaleValueHandle(bump.bumpPower, bump.transform.position + bump.transform.up * bump.bumpPower, Quaternion.identity, 1, Handles.CircleHandleCap, 1);

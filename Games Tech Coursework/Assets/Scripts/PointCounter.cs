@@ -30,7 +30,7 @@ class pointCounterHandles : Editor
             numberOfHazards = CheckNumberOfItems(pc, numberOfHazards, hazards);
             numberOfBumpers = CheckNumberOfItems(pc, numberOfBumpers, bumpers);
             numberOfPlatforms = CheckNumberOfItems(pc, numberOfPlatforms, platforms);
-            hasPlayer = GameObject.FindObjectOfType<Jump>();
+            hasPlayer = GameObject.FindObjectOfType<PlayerController>();
             hasExit = GameObject.FindObjectOfType<LevelExitTrigger>();
             GUILayout.Label("Total points available in scene: " + pc.totalPoints);
             GUILayout.Label("Total hazards in scene: " + numberOfHazards);

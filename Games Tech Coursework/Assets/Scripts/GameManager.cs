@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]GameObject playerPrefab;
+    public GameObject player;
     public float score;
     public float time;
     public static GameManager TGM;
@@ -13,14 +15,41 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text timerText;
     float secondsCounter;
     float minutesCounter;
-    
+    [field: SerializeField] float timeToRespawn { get; set; }
+    float respawnTimer;
+    public bool playerIsalive { get; set; }
+    public Transform playerSpawnPoint;
     private void Start()
     {
         TGM = this;
         scoreText.text = "score: " + 0;
+        
     }
     private void Update()
     {
+        if (playerSpawnPoint == null)
+        {
+            playerSpawnPoint = GameObject.FindGameObjectWithTag("EntryDoor").transform;
+        }
+        if (player ==null)
+        {
+            player = Instantiate(playerPrefab, playerSpawnPoint.transform.position,Quaternion.identity);
+            player.transform.parent = GameObject.FindGameObjectWithTag("LevelRotationPoint").transform;
+            playerIsalive = true;
+            respawnTimer = 0;
+        }
+        if (player!=null&&playerIsalive == false)
+        {
+            Debug.Log("Doing This");
+            respawnTimer += Time.deltaTime;
+            if (respawnTimer > timeToRespawn)
+            {
+                player.SetActive(true);
+                player.transform.position = playerSpawnPoint.position;
+                playerIsalive = true;
+                respawnTimer = 0;
+            }
+        }
         secondsCounter += Time.deltaTime;
         timerText.text = $"{minutesCounter}:{(int)secondsCounter}";
         if (secondsCounter >= 60)
