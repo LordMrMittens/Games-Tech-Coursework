@@ -23,6 +23,7 @@ public class JBAudioUtility : EditorWindow
     }
     void OnGUI()
     {
+        Undo.RecordObject(this, "Audio tool");
         ScriptableObject target = this;
         SerializedObject so = new SerializedObject(target);
         SerializedProperty audioClipsProperty = so.FindProperty("audioClips");
@@ -41,22 +42,64 @@ public class JBAudioUtility : EditorWindow
         }
         for (int i = 0; i < clips.Count; i++)
         {
-            
-            float playhead = 0;
+            using (var vertical = new GUILayout.VerticalScope())
+            {
+                float playhead = 0;
             {
                 if (audioSource != null)
                 {
                     playhead = audioSource.time;
                 }
             }
-            clips[i] = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", clips[i], typeof(AudioClip), false);
-            using (var horizontalScope = new GUILayout.HorizontalScope())
+            clips[i] = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", clips[i], typeof(AudioClip), false, GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                using (var horizontalScope = new GUILayout.HorizontalScope())
+                {
+
+                    if (audioSource != null && audioSource.clip == clips[i])
+                    {
+                        GUILayout.Label($"{ClipDuration(audioSource.time)} / {ClipDuration(clips[i].length)}");
+                        audioSource.time = GUILayout.HorizontalSlider(playhead, 0, clips[i].length, GUILayout.MinWidth(50), GUILayout.MaxWidth(3000), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+
+                    }
+                    else
+                    {
+                        GUILayout.Label($"00:00/{ClipDuration(clips[i].length)}");
+                        GUILayout.HorizontalSlider(0, 0, clips[i].length, GUILayout.MinWidth(50), GUILayout.MaxWidth(3000), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                    }
+                }
+                using (var horizontalScope = new GUILayout.HorizontalScope())
             {
                 if (GUILayout.Button("Remove"))
                 {
                     clips.Remove(clips[i]);
                 }
-                GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Create Audio Object"))
+                    {
+
+                        musicObject = AssignClipToAudioSource("Audio  Object", musicObject, clips[i]);
+                        CheckForAudioPreviewer();
+                        Selection.activeGameObject = musicObject.gameObject;
+
+
+                    }
+                    if (GUILayout.Button("Add Audio to Selected Object"))
+                    {
+                        if (Selection.activeGameObject == null)
+                        {
+                            Debug.Log("You must select an object to assign an audio source");
+                        }
+                        else if (Selection.activeGameObject.GetComponent<AudioSource>())
+                        {
+                            Selection.activeGameObject.GetComponent<AudioSource>().clip = clips[i];
+                            CheckForAudioPreviewer();
+                        }
+                        else
+                        {
+                            Selection.activeGameObject.AddComponent<AudioSource>().clip = clips[i];
+                            CheckForAudioPreviewer(Selection.activeGameObject);
+                        }
+                    }
+                    GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Play"))
                 {
                     audioSource = AssignClipToAudioSource("Temp Audio Source", audioSource, clips[i]);
@@ -89,47 +132,10 @@ public class JBAudioUtility : EditorWindow
 
                 }
             }
-            using (var vertical = new GUILayout.VerticalScope())
-            {
-                
-                if (audioSource != null && audioSource.clip == clips[i])
-                {
-                   audioSource.time = GUILayout.HorizontalSlider(playhead, 0, clips[i].length);
-                }
-                else {
-                    
-                    GUILayout.HorizontalSlider(0, 0, clips[i].length);
-                    
-                }
-                
-                GUILayout.FlexibleSpace();
             }
             using (var horizontalScope = new GUILayout.HorizontalScope())
             {
-                if (GUILayout.Button("Create Audio Object"))
-                {
-
-                    musicObject = AssignClipToAudioSource("Audio  Object", musicObject, clips[i]);
-                    CheckForAudioPreviewer();
-                    Selection.activeGameObject = musicObject.gameObject;
-
-
-                }
-                if (GUILayout.Button("Add Audio to Selected Object"))
-                {
-                    if (Selection.activeGameObject == null)
-                    {
-                        Debug.Log("You must select an object to assign an audio source");
-                    } else if (Selection.activeGameObject.GetComponent<AudioSource>())
-                    {
-                        Selection.activeGameObject.GetComponent<AudioSource>().clip = clips[i];
-                        CheckForAudioPreviewer();
-                    } else
-                    {
-                        Selection.activeGameObject.AddComponent<AudioSource>().clip = clips[i];
-                        CheckForAudioPreviewer();
-                    }
-                }
+                
             }
             if (audioSource && !isPaused)
             {
@@ -143,6 +149,15 @@ public class JBAudioUtility : EditorWindow
         
     }
 
+    private string ClipDuration(float clipLength)
+    {
+        
+        float minutes = Mathf.FloorToInt(clipLength / 60);
+        float seconds = Mathf.FloorToInt(clipLength % 60);
+        string clipDuration = string.Format("{0:00}:{1:00}", minutes, seconds);
+        return clipDuration;
+    }
+
     private void CheckForAudioPreviewer()
     {
         if (!musicObject.gameObject.GetComponent<AudioPreviewer>())
@@ -150,7 +165,13 @@ public class JBAudioUtility : EditorWindow
             musicObject.gameObject.AddComponent<AudioPreviewer>();
         }
     }
-
+    private void CheckForAudioPreviewer(GameObject selectedObject)
+    {
+        if (!selectedObject.GetComponent<AudioPreviewer>())
+        {
+            selectedObject.AddComponent<AudioPreviewer>();
+        }
+    }
     private AudioSource AssignClipToAudioSource(string objectName, AudioSource source, AudioClip clip)
     {
         if (!GameObject.Find(objectName))

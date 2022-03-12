@@ -52,20 +52,21 @@ public class JBObjects : EditorWindow
         GUILayout.Label("Object Creation Settings");
         using (var horizontalScope = new GUILayout.HorizontalScope())
         {
-            GUILayout.Label("Range: " + range.ToString("0#.00"));
-            range = GUILayout.HorizontalSlider(range, 0, 10);
+
+            GUILayout.Label("Range: " + range.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+            range = GUILayout.HorizontalSlider(range, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
         }
         GUILayout.Label("If hazard choose attack durations");
         using (var horizontalScope = new GUILayout.HorizontalScope())
         {
-            GUILayout.Label("Time between attacks: " + timeBetweenActions.ToString("0#.00"));
-            timeBetweenActions = GUILayout.HorizontalSlider(timeBetweenActions, 0, 10);
+            GUILayout.Label("Time between attacks: " + timeBetweenActions.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+            timeBetweenActions = GUILayout.HorizontalSlider(timeBetweenActions, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
             
         }
         using (var horizontalScope = new GUILayout.HorizontalScope())
         {
-            GUILayout.Label("Time attacking: " + timeAttacking.ToString("0#.00"));
-            timeAttacking = GUILayout.HorizontalSlider(timeAttacking, 0, 10);
+            GUILayout.Label("Time attacking: " + timeAttacking.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+            timeAttacking = GUILayout.HorizontalSlider(timeAttacking, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
             
         }
 
