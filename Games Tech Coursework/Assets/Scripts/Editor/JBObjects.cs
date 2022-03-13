@@ -45,7 +45,8 @@ public class JBObjects : EditorWindow
         tempObject = GameObject.Find("tempObject");
         if (!GameObject.Find("tempObject"))
         {
-            tempObject = Instantiate(temporarySprite);
+            tempObject = new GameObject();
+            tempObject.AddComponent<TempObject>();
             tempObject.name = "tempObject";
             Selection.activeGameObject = tempObject;
         }
@@ -55,6 +56,7 @@ public class JBObjects : EditorWindow
 
             GUILayout.Label("Range: " + range.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
             range = GUILayout.HorizontalSlider(range, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+            tempObject.GetComponent<TempObject>().range = range;
         }
         GUILayout.Label("If hazard choose attack durations");
         using (var horizontalScope = new GUILayout.HorizontalScope())
@@ -109,6 +111,9 @@ public class JBObjects : EditorWindow
             }
         }
         GUILayout.FlexibleSpace();
+
+           
+        
     }
 
     private void GetPosition(GameObject temp)
@@ -123,11 +128,6 @@ public class JBObjects : EditorWindow
         DestroyImmediate(GameObject.Find("tempObject"));
         SceneView.duringSceneGui -= this.OnSceneGUI;
     }
-    void OnDrawGizmos()
-    {
-    
-    }
-
     void OnSceneGUI(SceneView sceneView)
     {
         if (tempObject != null)
@@ -135,11 +135,12 @@ public class JBObjects : EditorWindow
             Handles.Label(tempObject.transform.position + Vector3.up * (range + .5f), "Approximate range");
             Handles.color = Color.red;
             EditorGUI.BeginChangeCheck();
-            float newBumpPower = (float)Mathf.Clamp(Handles.ScaleValueHandle(range, tempObject.transform.position + tempObject.transform.up * range, Quaternion.identity, 2, Handles.DotHandleCap, 2), 0, 10);
+            float newBumpPower = (float)Mathf.Clamp(Handles.ScaleValueHandle(range, tempObject.transform.position + tempObject.transform.up * range, Quaternion.identity, 1, Handles.DotHandleCap, 2), 0, 10);
             if (EditorGUI.EndChangeCheck())
             {
                 Undo.RecordObject(this, "Changed moving platform positions");
                 range = newBumpPower;
+                tempObject.GetComponent<TempObject>().range = range;
             }
         }
 

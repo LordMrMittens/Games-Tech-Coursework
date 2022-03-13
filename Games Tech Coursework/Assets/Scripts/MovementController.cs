@@ -4,10 +4,6 @@ using UnityEngine;
 using UnityEditor;
 public class MovementController : MonoBehaviour
 {
-    /// <summary>
-    /// can we draw gizmos to display the rotation limits?
-    /// </summary>
-   
     public float Speed;
     float z;
     Transform[] childrenTransforms;

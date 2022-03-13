@@ -23,6 +23,10 @@ public class MoverOverTime : MonoBehaviour
         {
             MovePlatform(posOne.transform.position, posTwo.transform.position);
         }
+                if (Selection.activeGameObject != null && Selection.activeGameObject.transform.IsChildOf(this.transform))
+        {
+            Selection.activeGameObject = this.gameObject;
+        }
     }
 
     private void MovePlatform(Vector3 pointA, Vector3 pointB)

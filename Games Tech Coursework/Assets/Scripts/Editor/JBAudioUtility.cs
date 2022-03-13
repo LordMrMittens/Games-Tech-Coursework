@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
+
 [ExecuteAlways]
+
 public class JBAudioUtility : EditorWindow
 {
     public AudioClip[] audioClips;
@@ -13,7 +15,9 @@ public class JBAudioUtility : EditorWindow
     AudioSource musicObject;
     bool isPaused;
     float playTime;
-
+    ScriptableObject target;
+    SerializedObject so;
+    SerializedProperty audioClipsProperty;
     [MenuItem("JB Tools/Audio Utility")]
     
     static void OpenWindow()
@@ -21,14 +25,19 @@ public class JBAudioUtility : EditorWindow
         EditorWindow.GetWindow(typeof(JBAudioUtility));
         
     }
+    private void OnEnable()
+    {
+        target = this;
+        so = new SerializedObject(target);
+        audioClipsProperty = so.FindProperty("audioClips");
+        
+    }
     void OnGUI()
     {
-        Undo.RecordObject(this, "Audio tool");
-        ScriptableObject target = this;
-        SerializedObject so = new SerializedObject(target);
-        SerializedProperty audioClipsProperty = so.FindProperty("audioClips");
+        so.Update();
+        
         EditorGUILayout.PropertyField(audioClipsProperty, true);
-        so.ApplyModifiedProperties();
+        
         if (audioClips != null && audioClips.Length > 0)
         {
             foreach (var clip in audioClips)
@@ -146,7 +155,7 @@ public class JBAudioUtility : EditorWindow
                 
             }
         }
-        
+        so.ApplyModifiedProperties();
     }
 
     private string ClipDuration(float clipLength)
