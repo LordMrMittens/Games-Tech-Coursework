@@ -26,7 +26,7 @@ public class MapCreator : MonoBehaviour
         {
             if (!MapTileDic.ContainsKey(tile.color))
             {
-                MapTileDic.Add(tile.color, tile.instance);
+                MapTileDic.Add(tile.color, tile.mapTile);
             }
             else
             {

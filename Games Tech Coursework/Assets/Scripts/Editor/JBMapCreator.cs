@@ -10,6 +10,7 @@ public class JBMapCreator : EditorWindow
 {
     private UnityEngine.Object[] mapObjects;
     public List<MapFiller> instances;
+    
     private Dictionary<Color, GameObject> MapTileDic;
 
     public Texture2D map;
@@ -25,27 +26,27 @@ public class JBMapCreator : EditorWindow
     }
     private void OnEnable()
     {
-        mapObjects = Resources.LoadAll("GameObjects", typeof(GameObject));
+       mapObjects = Resources.LoadAll("GameObjects", typeof(GameObject));
         
         target = this;
         so = new SerializedObject(target);
         mapProperties = so.FindProperty("instances");
-        for (int i = 0; i < mapObjects.Length; i++)
+     if (mapObjects.Length > 0)
         {
-            instances.Add(CreateMapFiller(i));
+            for (int i = 0; i < mapObjects.Length; i++)
+            {
+                mapProperties.arraySize++;
+                              /*MapFiller test = new MapFiller { color = Color.black, mapTile = mapObjects[i] as GameObject };
+                                Debug.Log(test.mapTile.name + " " + test.color);
+                                instances[i] = test;*/
+            }
         }
-    }
-
-    private MapFiller CreateMapFiller(int i)
-    {
-        MapFiller filler = new MapFiller { color = Color.black, instance = mapObjects[i] as GameObject };
-        return filler;
     }
 
     private void OnGUI()
     {
         EditorGUILayout.PropertyField(mapProperties, true);
-        if (GUILayout.Button("Add Objects to map creator"))
+            if (GUILayout.Button("Add Objects to map creator"))
         {
             StartDictionary();
         }
@@ -78,7 +79,7 @@ public class JBMapCreator : EditorWindow
         {
             if (!MapTileDic.ContainsKey(tile.color))
             {
-                MapTileDic.Add(tile.color, tile.instance);
+                MapTileDic.Add(tile.color, tile.mapTile);
             }
             else
             {
@@ -114,5 +115,5 @@ public class JBMapCreator : EditorWindow
 public class MapFiller
 {
     public Color color;
-    public GameObject instance;
+    public GameObject mapTile;
 }

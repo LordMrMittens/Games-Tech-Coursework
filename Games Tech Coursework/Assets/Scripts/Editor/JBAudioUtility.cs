@@ -20,17 +20,14 @@ public class JBAudioUtility : EditorWindow
     static void OpenWindow()
     {
         EditorWindow.GetWindow(typeof(JBAudioUtility));
-        
     }
     private void OnEnable()
     {
-
         audioClips = Resources.LoadAll<AudioClip>("Audio");
         if (audioClips != null && audioClips.Length > 0)
         {
             foreach (var clip in audioClips)
             {
-
                 if (!clips.Contains(clip))
                 {
                     clips.Add(clip);
@@ -40,9 +37,6 @@ public class JBAudioUtility : EditorWindow
     }
     void OnGUI()
     {
-
-        
-
         for (int i = 0; i < clips.Count; i++)
         {
             using (var vertical = new GUILayout.VerticalScope())
@@ -62,7 +56,6 @@ public class JBAudioUtility : EditorWindow
                     {
                         GUILayout.Label($"{ClipDuration(audioSource.time)} / {ClipDuration(clips[i].length)}");
                         audioSource.time = GUILayout.HorizontalSlider(playhead, 0, clips[i].length, GUILayout.MinWidth(50), GUILayout.MaxWidth(3000), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-
                     }
                     else
                     {
@@ -136,17 +129,12 @@ public class JBAudioUtility : EditorWindow
                 }
             }
             }
-            using (var horizontalScope = new GUILayout.HorizontalScope())
-            {
-                
-            }
             if (audioSource && !isPaused)
             {
                 if (!audioSource.isPlaying)
                 {
                     DestroyImmediate(audioSource.gameObject);
                 }
-                
             }
         }
         
@@ -154,7 +142,6 @@ public class JBAudioUtility : EditorWindow
 
     private string ClipDuration(float clipLength)
     {
-        
         float minutes = Mathf.FloorToInt(clipLength / 60);
         float seconds = Mathf.FloorToInt(clipLength % 60);
         string clipDuration = string.Format("{0:00}:{1:00}", minutes, seconds);
