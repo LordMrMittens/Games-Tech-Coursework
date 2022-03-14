@@ -63,14 +63,15 @@
     <Compile Include="Assets\Scripts\Editor\JBObjects.cs" />
     <Compile Include="Assets\Scripts\Hazard.cs" />
     <Compile Include="Assets\Scripts\Editor\JBAudioUtility.cs" />
+    <Compile Include="Assets\Scripts\Editor\MapCreator.cs" />
     <Compile Include="Assets\Scripts\LevelExitTrigger.cs" />
-    <Compile Include="Assets\Scripts\Editor\Collections.cs" />
+    <Compile Include="Assets\Scripts\TempObject.cs" />
     <Compile Include="Assets\Scripts\PointCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\AudioPreviewer.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
     <Compile Include="Assets\Scripts\Editor\AlignToPivot.cs" />
-    <Compile Include="Assets\Scripts\TempObject.cs" />
+    <Compile Include="Assets\Scripts\Editor\JBMapCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />

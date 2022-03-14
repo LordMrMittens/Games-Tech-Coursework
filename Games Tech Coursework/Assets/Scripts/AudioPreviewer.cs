@@ -9,13 +9,6 @@ public class AudioPreviewer : MonoBehaviour
     public AudioSource source { get; set; }
     public bool isPaused { get; set; }
     public float playhead { get; set; }
-
-
-    private void OnGUI()
-    {
-        
-        
-    }
 }
 [CustomEditor(typeof(AudioPreviewer))]
 public class audioPreviewerButtons : Editor
