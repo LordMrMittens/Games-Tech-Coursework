@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673cc580d6daedc48be9bea4caaae5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 2.7
+  jumpHeight: 2.82
   jumpCharge: 0
   neutral: {r: 1, g: 1, b: 1, a: 0}
   charging: {r: 0.07843137, g: 1, b: 0.87969214, a: 0}

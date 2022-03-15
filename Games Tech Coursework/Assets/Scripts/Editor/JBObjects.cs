@@ -25,95 +25,113 @@ public class JBObjects : EditorWindow
     }
     private void OnGUI()
     {
-        if (!GameObject.FindGameObjectWithTag("EntryDoor"))
+        using (var horizontal = new GUILayout.HorizontalScope())
         {
-            GUILayout.Label("This level is lacking an entry point.");
-        }
-        if (!GameObject.FindGameObjectWithTag("ExitDoor"))
-        {
-            GUILayout.Label("This level is lacking an exit point.");
-        }
-        if (GameObject.FindGameObjectsWithTag("Points").Length ==0)
-        {
-            GUILayout.Label("This level is lacking point Pickups.");
-        }
-        GameObject temporarySprite = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scripts/Editor/TempObjects/TempObject.prefab", typeof(GameObject));
-        GameObject bumperPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Bumper.prefab", typeof(GameObject));
-        GameObject hazardPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Hazard.prefab", typeof(GameObject));
-        GameObject exitDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/ExitDoor.prefab", typeof(GameObject));
-        GameObject entryDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EntryDoor.prefab", typeof(GameObject));
-        tempObject = GameObject.Find("tempObject");
-        if (!GameObject.Find("tempObject"))
-        {
-            tempObject = new GameObject();
-            tempObject.AddComponent<TempObject>();
-            tempObject.name = "tempObject";
-            Selection.activeGameObject = tempObject;
-        }
-        GUILayout.Label("Object Creation Settings");
-        using (var horizontalScope = new GUILayout.HorizontalScope())
-        {
-
-            GUILayout.Label("Range: " + range.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            range = GUILayout.HorizontalSlider(range, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            tempObject.GetComponent<TempObject>().range = range;
-        }
-        GUILayout.Label("If hazard choose attack durations");
-        using (var horizontalScope = new GUILayout.HorizontalScope())
-        {
-            GUILayout.Label("Time between attacks: " + timeBetweenActions.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            timeBetweenActions = GUILayout.HorizontalSlider(timeBetweenActions, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            
-        }
-        using (var horizontalScope = new GUILayout.HorizontalScope())
-        {
-            GUILayout.Label("Time attacking: " + timeAttacking.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            timeAttacking = GUILayout.HorizontalSlider(timeAttacking, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-            
-        }
-
-        if (GUILayout.Button("Create Bumper"))
-        {
-            GameObject bumper = Instantiate(bumperPrefab);
-            GetPosition(bumper);
-            bumper.GetComponent<Bumper>().bumpPower = range;
-        }
-        if (GUILayout.Button("Create Hazard"))
-        {
-            GameObject hazard = Instantiate(hazardPrefab);
-            GetPosition(hazard);
-            Hazard hazardControls = hazard.GetComponent<Hazard>();
-            hazardControls.attackRadius = range * 2;
-            hazardControls.timeBetweenAttacks = timeBetweenActions;
-            hazardControls.timeAttacking = timeAttacking;
-        }
-        if (GUILayout.Button("Create Exit Door"))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
-            if (hit.collider != null)
+            using (var vertical = new GUILayout.VerticalScope())
             {
-                GameObject door = Instantiate(exitDoorPrefab, hit.point, Quaternion.identity);
-            } else
+                if (GUILayout.Button("Bumper tool"))
+                { }
+                if (GUILayout.Button("Hazard tool"))
+                { }
+                if (GUILayout.Button("Door tool"))
+                { }
+                if (GUILayout.Button("Moving platform tool"))
+                { }
+            }
+            using (var vertical = new GUILayout.VerticalScope())
             {
-                Debug.Log("Place marker over valid surface");
+                
+
+                if (!GameObject.FindGameObjectWithTag("EntryDoor"))
+                {
+                    GUILayout.Label("This level is lacking an entry point.");
+                }
+                if (!GameObject.FindGameObjectWithTag("ExitDoor"))
+                {
+                    GUILayout.Label("This level is lacking an exit point.");
+                }
+                if (GameObject.FindGameObjectsWithTag("Points").Length == 0)
+                {
+                    GUILayout.Label("This level is lacking point Pickups.");
+                }
+                GameObject temporarySprite = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scripts/Editor/TempObjects/TempObject.prefab", typeof(GameObject));
+                GameObject bumperPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Bumper.prefab", typeof(GameObject));
+                GameObject hazardPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Hazard.prefab", typeof(GameObject));
+                GameObject exitDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/ExitDoor.prefab", typeof(GameObject));
+                GameObject entryDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EntryDoor.prefab", typeof(GameObject));
+                tempObject = GameObject.Find("tempObject");
+                if (!GameObject.Find("tempObject"))
+                {
+                    tempObject = new GameObject();
+                    tempObject.AddComponent<TempObject>();
+                    tempObject.name = "tempObject";
+                    Selection.activeGameObject = tempObject;
+                }
+                GUILayout.Label("Object Creation Settings");
+                using (var horizontalScope = new GUILayout.HorizontalScope())
+                {
+
+                    GUILayout.Label("Range: " + range.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                    range = GUILayout.HorizontalSlider(range, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                    tempObject.GetComponent<TempObject>().range = range;
+                }
+                GUILayout.Label("If hazard choose attack durations");
+                using (var horizontalScope = new GUILayout.HorizontalScope())
+                {
+                    GUILayout.Label("Time between attacks: " + timeBetweenActions.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                    timeBetweenActions = GUILayout.HorizontalSlider(timeBetweenActions, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+
+                }
+                using (var horizontalScope = new GUILayout.HorizontalScope())
+                {
+                    GUILayout.Label("Time attacking: " + timeAttacking.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                    timeAttacking = GUILayout.HorizontalSlider(timeAttacking, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+
+                }
+
+                if (GUILayout.Button("Create Bumper"))
+                {
+                    GameObject bumper = Instantiate(bumperPrefab);
+                    GetPosition(bumper);
+                    bumper.GetComponent<Bumper>().bumpPower = range;
+                }
+                if (GUILayout.Button("Create Hazard"))
+                {
+                    GameObject hazard = Instantiate(hazardPrefab);
+                    GetPosition(hazard);
+                    Hazard hazardControls = hazard.GetComponent<Hazard>();
+                    hazardControls.attackRadius = range * 2;
+                    hazardControls.timeBetweenAttacks = timeBetweenActions;
+                    hazardControls.timeAttacking = timeAttacking;
+                }
+                if (GUILayout.Button("Create Exit Door"))
+                {
+                    RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
+                    if (hit.collider != null)
+                    {
+                        GameObject door = Instantiate(exitDoorPrefab, hit.point, Quaternion.identity);
+                    }
+                    else
+                    {
+                        Debug.Log("Place marker over valid surface");
+                    }
+                }
+                if (GUILayout.Button("Create Entry Door"))
+                {
+                    RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
+                    if (hit.collider != null)
+                    {
+                        GameObject door = Instantiate(entryDoorPrefab, hit.point, Quaternion.identity);
+                    }
+                    else
+                    {
+                        Debug.Log("Place marker over valid surface");
+                    }
+                }
+                GUILayout.FlexibleSpace();
+
             }
         }
-        if (GUILayout.Button("Create Entry Door"))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
-            if (hit.collider != null)
-            {
-                GameObject door = Instantiate(entryDoorPrefab, hit.point, Quaternion.identity);
-            }
-            else
-            {
-                Debug.Log("Place marker over valid surface");
-            }
-        }
-        GUILayout.FlexibleSpace();
-
-           
-        
     }
 
     private void GetPosition(GameObject temp)

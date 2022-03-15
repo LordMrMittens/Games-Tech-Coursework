@@ -114,6 +114,6 @@ public class JBMapCreator : EditorWindow
 [Serializable]
 public class MapFiller
 {
-    public Color color;
+    public Color color = Color.white;
     public GameObject mapTile;
 }

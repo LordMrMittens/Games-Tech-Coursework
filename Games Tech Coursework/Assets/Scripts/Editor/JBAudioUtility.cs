@@ -15,6 +15,7 @@ public class JBAudioUtility : EditorWindow
     AudioSource musicObject;
     bool isPaused;
     float playTime;
+    Vector2 scrollPos;
     [MenuItem("JB Tools/Audio Utility")]
     
     static void OpenWindow()
@@ -37,6 +38,7 @@ public class JBAudioUtility : EditorWindow
     }
     void OnGUI()
     {
+        scrollPos = GUILayout.BeginScrollView(scrollPos, false, true, GUILayout.ExpandHeight(true));
         for (int i = 0; i < clips.Count; i++)
         {
             using (var vertical = new GUILayout.VerticalScope())
@@ -137,7 +139,7 @@ public class JBAudioUtility : EditorWindow
                 }
             }
         }
-        
+        GUILayout.EndScrollView();
     }
 
     private string ClipDuration(float clipLength)
