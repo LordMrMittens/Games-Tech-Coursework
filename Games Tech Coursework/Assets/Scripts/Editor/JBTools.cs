@@ -12,7 +12,7 @@ public class MovingPlatformWindow : EditorWindow
     public Vector3 secondPosition;
     public float speed;
 
-    [MenuItem("JB Tools/ Moving Platform Tool %&m")]
+    //[MenuItem("JB Tools/ Moving Platform Tool %&m")]
     static void OpenWindow()
     {
         EditorWindow.GetWindow(typeof(MovingPlatformWindow));

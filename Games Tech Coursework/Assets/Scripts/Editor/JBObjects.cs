@@ -9,14 +9,19 @@ public class JBObjects : EditorWindow
     //moving platform
     public Vector3 firstPosition;
     public Vector3 secondPosition;
-    public float speed;
+    public float speed = .5f;
 
     //Range objects
     public float range = 1;
     public float timeBetweenActions = 8;
     public float timeAttacking = 1;
 
+    //temporary objects
+    GameObject tempPosOne;
+    GameObject tempPosTwo;
     public GameObject tempObject;
+    GameObject tempDoor;
+
     activetool tool = activetool.bumper;
     [MenuItem("JB Tools/Key Objects")]
 
@@ -56,19 +61,28 @@ public class JBObjects : EditorWindow
                 //this is buttons to choose a type of object
                 if (GUILayout.Button("Bumper tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
                 {
+                    DestroyTemporaryMarkersIfPresent();
                     tool = activetool.bumper;
+                    tempObject.GetComponent<TempObject>().isDrawingRange = true;
                 }
                 if (GUILayout.Button("Hazard tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
                 {
+                    DestroyTemporaryMarkersIfPresent();
                     tool = activetool.hazard;
+                    tempObject.GetComponent<TempObject>().isDrawingRange = true;
                 }
                 if (GUILayout.Button("Door tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
                 {
+                    DestroyTemporaryMarkersIfPresent();
                     tool = activetool.door;
+                    tempObject.GetComponent<TempObject>().isDrawingRange = false;
                 }
                 if (GUILayout.Button("Moving platform tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
                 {
                     tool = activetool.movingPlatform;
+                    firstPosition = new Vector3(tempObject.transform.position.x + 1, tempObject.transform.position.y, tempObject.transform.position.z);
+                    secondPosition = new Vector3(tempObject.transform.position.x - 1, tempObject.transform.position.y, tempObject.transform.position.z);
+                    tempObject.GetComponent<TempObject>().isDrawingRange = false ;
                 }
             }
             using (var vertical = new GUILayout.VerticalScope())
@@ -81,6 +95,8 @@ public class JBObjects : EditorWindow
                 GameObject hazardPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Hazard.prefab", typeof(GameObject));
                 GameObject exitDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/ExitDoor.prefab", typeof(GameObject));
                 GameObject entryDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EntryDoor.prefab", typeof(GameObject));
+                GameObject movingObjectPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/MovingObject.prefab", typeof(GameObject));
+                GameObject tempDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/TempDoor.prefab", typeof(GameObject));
                 //this creates a temporary gameobject
                 tempObject = GameObject.Find("tempObject");
                 if (!GameObject.Find("tempObject"))
@@ -91,10 +107,11 @@ public class JBObjects : EditorWindow
                     Selection.activeGameObject = tempObject;
                 }
                 GUILayout.Label("Object Creation Settings");
-                switch (tool) {
+                switch (tool)
+                {
 
                     case activetool.bumper:
-                        
+
 
                         using (var horizontalScope = new GUILayout.HorizontalScope())
                         {
@@ -138,9 +155,11 @@ public class JBObjects : EditorWindow
                     case activetool.door:
                         using (var horizontalScope = new GUILayout.HorizontalScope())
                         {
+                            RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
+
                             if (GUILayout.Button("Create Exit Door"))
                             {
-                                RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
+                                
                                 if (hit.collider != null)
                                 {
                                     GameObject door = Instantiate(exitDoorPrefab, hit.point, Quaternion.identity);
@@ -152,7 +171,7 @@ public class JBObjects : EditorWindow
                             }
                             if (GUILayout.Button("Create Entry Door"))
                             {
-                                RaycastHit2D hit = Physics2D.Raycast(tempObject.transform.position, Vector2.down);
+                                
                                 if (hit.collider != null)
                                 {
                                     GameObject door = Instantiate(entryDoorPrefab, hit.point, Quaternion.identity);
@@ -166,14 +185,32 @@ public class JBObjects : EditorWindow
                         break;
 
                     case activetool.movingPlatform:
-                        firstPosition = EditorGUILayout.Vector3Field("Starting Position", firstPosition);
-                        secondPosition = EditorGUILayout.Vector3Field("Ending Position", secondPosition);
+                        if (tempPosOne == null)
+                        {
+                            tempPosOne = CreateTempMarker("TempMarkerOne", tempPosOne, Color.red);
+                            tempPosOne.transform.position = firstPosition;
+                        }
+                        if (tempPosTwo == null)
+                        {
+                            tempPosTwo = CreateTempMarker("TempMarkerTwo", tempPosTwo, Color.green);
+                            tempPosTwo.transform.position = secondPosition;
+                        }
+                        
+                        //firstPosition = EditorGUILayout.Vector3Field("Starting Position", firstPosition);
+                        //secondPosition = EditorGUILayout.Vector3Field("Ending Position", secondPosition);
+                       // tempObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
                         speed = EditorGUILayout.FloatField("Speed", speed);
+                         firstPosition = tempPosOne.transform.position;
+                         secondPosition = tempPosTwo.transform.position;
                         if (GUILayout.Button("Add component selected object"))
                         {
                             if (!Selection.activeGameObject)
                             {
                                 Debug.Log("No Object Selected!");
+                            }
+                            else if (Selection.activeGameObject == tempObject)
+                            {
+                                Debug.Log("Cannot add moving platform to temporary objects");
                             }
                             else if (!Selection.activeGameObject.GetComponent<MoverOverTime>() && !Selection.activeGameObject.GetComponentInParent<MoverOverTime>())
                             {
@@ -184,11 +221,36 @@ public class JBObjects : EditorWindow
                                 TryAssignValues();
                             }
                         }
+                        if (GUILayout.Button("Create Moving Object"))
+                        {
+                            GameObject movingObject = Instantiate(movingObjectPrefab);
+                            Selection.activeGameObject = movingObject;
+                            AssignTheValues(movingObject.GetComponent<MoverOverTime>());
+                            
+                        }
                         break;
-                
+
                 }
                 GUILayout.FlexibleSpace();
             }
+        }
+    }
+
+    private GameObject CreateTempMarker(string name, GameObject markerObject, Color markerColor)
+    {
+        if (!GameObject.Find(name))
+        {
+            markerObject = new GameObject();
+            markerObject.name = name;
+            markerObject.AddComponent<TempMarker>().color = markerColor;
+            markerObject.transform.parent = tempObject.transform;
+            
+            return markerObject;
+        }
+        else
+        {
+            markerObject = GameObject.Find(name);
+            return markerObject;
         }
     }
 
@@ -209,21 +271,38 @@ public class JBObjects : EditorWindow
     private void OnDestroy()
     {
         DestroyImmediate(GameObject.Find("tempObject"));
+        DestroyTemporaryMarkersIfPresent();
         SceneView.duringSceneGui -= this.OnSceneGUI;
     }
+
+    private void DestroyTemporaryMarkersIfPresent()
+    {
+        if (tempPosOne != null)
+        {
+            DestroyImmediate(GameObject.Find("TempMarkerOne"));
+        }
+        if (tempPosTwo != null)
+        {
+            DestroyImmediate(GameObject.Find("TempMarkerTwo"));
+        }
+    }
+
     void OnSceneGUI(SceneView sceneView)
     {
         if (tempObject != null)
         {
-            Handles.Label(tempObject.transform.position + Vector3.up * (range + .5f), "Approximate range");
-            Handles.color = Color.red;
-            EditorGUI.BeginChangeCheck();
-            float newBumpPower = (float)Mathf.Clamp(Handles.ScaleValueHandle(range, tempObject.transform.position + tempObject.transform.up * range, Quaternion.identity, 1, Handles.DotHandleCap, 2), 0, 10);
-            if (EditorGUI.EndChangeCheck())
+            if (tool == activetool.bumper || tool == activetool.hazard)
             {
-                Undo.RecordObject(this, "Changed moving platform positions");
-                range = newBumpPower;
-                tempObject.GetComponent<TempObject>().range = range;
+                Handles.Label(tempObject.transform.position + Vector3.up * (range + .5f), "Approximate range");
+                Handles.color = Color.red;
+                EditorGUI.BeginChangeCheck();
+                float newBumpPower = (float)Mathf.Clamp(Handles.ScaleValueHandle(range, tempObject.transform.position + tempObject.transform.up * range, Quaternion.identity, 1, Handles.DotHandleCap, 2), 0, 10);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(this, "Changed moving platform positions");
+                    range = newBumpPower;
+                    tempObject.GetComponent<TempObject>().range = range;
+                }
             }
         }
 
@@ -248,7 +327,7 @@ public class JBObjects : EditorWindow
             mover.positionTwo = secondPosition;
             mover.posTwo.transform.position = secondPosition;
             mover.speed = speed;
-            Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
+           Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
         }
     }
     private void CreateEmptyGameObjects()
@@ -256,6 +335,7 @@ public class JBObjects : EditorWindow
         var master = new GameObject();
         master.name = "MovingObject";
         master.AddComponent<MoverOverTime>();
+        master.AddComponent<BoxCollider2D>();
         master.transform.position = Selection.activeGameObject.transform.position;
         master.transform.localScale = Selection.activeGameObject.transform.localScale;
         Selection.activeGameObject.transform.parent = master.transform;

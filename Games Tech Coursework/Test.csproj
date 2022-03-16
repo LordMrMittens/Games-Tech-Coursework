@@ -68,10 +68,13 @@
     <Compile Include="Assets\Scripts\TempObject.cs" />
     <Compile Include="Assets\Scripts\PointCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Editor\JBMapCreator.cs" />
     <Compile Include="Assets\Scripts\AudioPreviewer.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
     <Compile Include="Assets\Scripts\Editor\AlignToPivot.cs" />
-    <Compile Include="Assets\Scripts\Editor\JBMapCreator.cs" />
+    <Compile Include="Assets\Scripts\TempMarker.cs" />
+    <Compile Include="Assets\Scripts\CameraFollowController.cs" />
+    <Compile Include="Assets\Scripts\MenuController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />

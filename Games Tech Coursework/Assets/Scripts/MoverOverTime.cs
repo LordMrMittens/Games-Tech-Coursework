@@ -15,7 +15,7 @@ public class MoverOverTime : MonoBehaviour
     [SerializeField] bool displayPreviews = true;
     void Start()
     {
-        distance = Vector3.Distance(posOne.transform.position.normalized, posTwo.transform.position.normalized);
+        distance = Vector3.Distance(posOne.transform.position, posTwo.transform.position);
     }
     public virtual void Update()
     {
@@ -31,8 +31,9 @@ public class MoverOverTime : MonoBehaviour
 
     private void MovePlatform(Vector3 pointA, Vector3 pointB)
     {
-        float time = Mathf.PingPong(Time.time * (speed / Mathf.Abs(distance)), 1);
-        movingObject.transform.position = Vector3.Lerp(pointA, pointB, time);
+        float FinalSpeed = Mathf.PingPong(Time.time * (speed / Mathf.Abs(distance)), 1);
+        
+        movingObject.transform.position = Vector3.Lerp(pointA, pointB, FinalSpeed);
     }
     public virtual void OnDrawGizmos()
     {
@@ -64,13 +65,7 @@ public class MoverOverTimeHandles : Editor
 {
     private void OnSceneGUI()
     {
-        if (Selection.activeGameObject.GetComponent<MoverOverTime>())
-        {
-            Tools.hidden = true;
-        }
-        else {
-            Tools.hidden = false;
-                }
+
         if (!Application.isPlaying)
         {
             MoverOverTime mot = (MoverOverTime)target;

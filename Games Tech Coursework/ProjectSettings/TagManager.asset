@@ -11,11 +11,12 @@ TagManager:
   - MovingPlatform
   - Points
   - LevelRotationPoint
+  - Level
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Level
   - Water
   - UI
   - 

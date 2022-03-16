@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     [field: SerializeField] float timeToRespawn { get; set; }
     float respawnTimer;
     public bool playerIsalive { get; set; }
-    public Transform playerSpawnPoint;
+    Transform playerSpawnPoint;
     private void Start()
     {
         TGM = this;
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         }
         if (player!=null&&playerIsalive == false)
         {
-            Debug.Log("Doing This");
+
             respawnTimer += Time.deltaTime;
             if (respawnTimer > timeToRespawn)
             {
