@@ -36,9 +36,11 @@ public class JBMapCreator : EditorWindow
             for (int i = 0; i < mapObjects.Length; i++)
             {
                 mapProperties.arraySize++;
-                              /*MapFiller test = new MapFiller { color = Color.black, mapTile = mapObjects[i] as GameObject };
+                             /* MapFiller test = new MapFiller { color = Color.black, mapTile = mapObjects[i] as GameObject };
                                 Debug.Log(test.mapTile.name + " " + test.color);
                                 instances[i] = test;*/
+                //arraylist
+                //unordered list
             }
         }
     }
