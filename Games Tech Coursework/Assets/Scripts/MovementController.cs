@@ -4,9 +4,8 @@ using UnityEngine;
 using UnityEditor;
 public class MovementController : MonoBehaviour
 {
-    public float Speed;
+    [SerializeField] float Speed =40;
     float z;
-    Transform[] childrenTransforms;
     void Update()
     {
         float inputZ = Input.GetAxisRaw("Horizontal");

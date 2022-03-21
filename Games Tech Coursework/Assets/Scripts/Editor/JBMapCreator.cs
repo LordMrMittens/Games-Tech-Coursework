@@ -9,7 +9,7 @@ using UnityEditor;
 public class JBMapCreator : EditorWindow
 {
     private UnityEngine.Object[] mapObjects;
-    public List<MapFiller> instances;
+    public List<MapFiller> instances = new List<MapFiller>();
     
     private Dictionary<Color, GameObject> MapTileDic;
 
@@ -18,6 +18,12 @@ public class JBMapCreator : EditorWindow
     ScriptableObject target;
     SerializedObject so;
     SerializedProperty mapProperties;
+    bool isGameplay;
+    GameObject mapPivotPoint;
+        GameObject levelContainer;
+
+
+    bool explanation;
     [MenuItem("JB Tools/Map Creator utility")]
     static void OpenWindow()
     {
@@ -26,40 +32,73 @@ public class JBMapCreator : EditorWindow
     }
     private void OnEnable()
     {
-       mapObjects = Resources.LoadAll("GameObjects", typeof(GameObject));
+       mapObjects = Resources.LoadAll("MapObjects", typeof(GameObject));
         
         target = this;
         so = new SerializedObject(target);
         mapProperties = so.FindProperty("instances");
-     if (mapObjects.Length > 0)
-        {
-            for (int i = 0; i < mapObjects.Length; i++)
-            {
-                mapProperties.arraySize++;
-                             /* MapFiller test = new MapFiller { color = Color.black, mapTile = mapObjects[i] as GameObject };
-                                Debug.Log(test.mapTile.name + " " + test.color);
-                                instances[i] = test;*/
-                //arraylist
-                //unordered list
-            }
-        }
     }
 
     private void OnGUI()
     {
-        EditorGUILayout.PropertyField(mapProperties, true);
-            if (GUILayout.Button("Add Objects to map creator"))
+        using (var horizontal = new GUILayout.HorizontalScope())
         {
-            StartDictionary();
+            using (var vertical = new GUILayout.VerticalScope())
+            {
+                EditorGUILayout.PropertyField(mapProperties, true);
+            }
+            if (instances.Count > 0)
+            {
+                StartDictionary();
+            }
         }
-        map = TextureField("Image to create a map", map);
-        spaceBetweenTiles = EditorGUILayout.FloatField(spaceBetweenTiles);
-
-        if (GUILayout.Button("Create Map"))
+        using (var horizontal = new GUILayout.HorizontalScope())
         {
             
-            CreateMap();
+            using (var vertical = new GUILayout.VerticalScope())
+            {
+                isGameplay = EditorGUILayout.Toggle("Gameplay Object Map: ", isGameplay);
+                spaceBetweenTiles = EditorGUILayout.FloatField("Distance between Tiles: ", spaceBetweenTiles, GUILayout.MinWidth(200), GUILayout.MaxWidth(200), GUILayout.Height(20));
+            }
+            map = TextureField("Texture map", map);
         }
+        using (var horizontal = new GUILayout.HorizontalScope())
+        {
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Create Map", GUILayout.MinWidth(140), GUILayout.MaxWidth(200), GUILayout.Height(30)))
+            {
+
+                CreateMap();
+            }
+            GUILayout.FlexibleSpace();
+        }
+        GUILayout.FlexibleSpace();
+        if (explanation)
+        {
+            GUILayout.Label("Instructions:");
+
+
+            GUILayout.TextArea($"Drag and drop level piece prefabs (by default in Assets/Resources/MapObjects) into the map tile slots above. {Environment.NewLine}" +
+                $"Choose a colour to associate it with that specific prefab, the alpha of any colour chosen is considered in the colour association.{Environment.NewLine}" +
+                $"Using the texture picker select a texture to be used as to create the map. {Environment.NewLine}" +
+                $"Textures must be set to default texture ype and set to be read/write enabled in their inspector, point filter mode is recommended{Environment.NewLine}" +
+                $"Select if object is a gameplay object rather than a map object, this will determine how the object will be parented. {Environment.NewLine}" +
+                $" Finally, choose the spacing between tiles.{Environment.NewLine}" +
+                $"Pressing create map should create a map and parent it to a pivot point which is already controllable by the player");
+        }
+        
+        if (GUILayout.Button("Show Explanation",GUILayout.MinWidth(140), GUILayout.MaxWidth(140), GUILayout.Height(20)))
+        {
+            if (!explanation)
+            {
+                explanation = true;
+            }
+            else
+            {
+                explanation = false;
+            }
+        }
+
 
     }
 
@@ -68,9 +107,8 @@ public class JBMapCreator : EditorWindow
         GUILayout.BeginVertical();
         var style = new GUIStyle(GUI.skin.label);
         style.alignment = TextAnchor.UpperCenter;
-        style.fixedWidth = 70;
-        GUILayout.Label(name, style);
-        var result = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Width(70), GUILayout.Height(70));
+        GUILayout.Label(name, style, GUILayout.Width(100), GUILayout.Height(20));
+        var result = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Width(100), GUILayout.Height(100));
         GUILayout.EndVertical();
         return result;
     }
@@ -83,14 +121,30 @@ public class JBMapCreator : EditorWindow
             {
                 MapTileDic.Add(tile.color, tile.mapTile);
             }
-            else
-            {
-                Debug.Log("Colour already present" + tile.color);
-            }
         }
     }
     void CreateMap()
     {
+        if(GameObject.Find("Level Container"))
+        {
+            levelContainer = GameObject.Find("Level Container");
+        } else
+        {
+            levelContainer = new GameObject();
+            levelContainer.name = "Level Container";
+            levelContainer.tag = "LevelRotationPoint";
+            levelContainer.AddComponent<MovementController>();
+        }
+        if (GameObject.Find("Map Pivot Point"))
+        {
+            mapPivotPoint = GameObject.Find("Map Pivot Point");
+        }
+        else
+        {
+            mapPivotPoint = new GameObject();
+            mapPivotPoint.name = "Map Pivot Point";
+        }
+        mapPivotPoint.transform.parent = levelContainer.transform;
         for (int i = 0; i < map.width; i++)
         {
             for (int j = 0; j < map.height; j++)
@@ -101,7 +155,15 @@ public class JBMapCreator : EditorWindow
                 {
                     if (tile != null)
                     {
-                        GameObject.Instantiate(tile, new Vector3(0, 0, 0) + tilePos, Quaternion.identity);
+                        GameObject mapTile = Instantiate(tile, new Vector3(levelContainer.transform.position.x-(map.width/2),levelContainer.transform.position.y-(map.height/2),0) + tilePos, Quaternion.identity);
+                        if (!isGameplay)
+                        {
+                            mapTile.transform.parent = mapPivotPoint.transform;
+                        }
+                        else
+                        {
+                            mapTile.transform.parent = levelContainer.transform;
+                        }
                     }
                 }
                 else

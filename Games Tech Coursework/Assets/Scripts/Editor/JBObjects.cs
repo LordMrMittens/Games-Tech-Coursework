@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
-public enum activetool { bumper, hazard, door, movingPlatform }
+using System;
+public enum activetool { bumper, hazard, door, movingPlatform, coin }
 public class JBObjects : EditorWindow
 {
     //moving platform
@@ -20,9 +20,13 @@ public class JBObjects : EditorWindow
     GameObject tempPosOne;
     GameObject tempPosTwo;
     public GameObject tempObject;
-    GameObject tempDoor;
 
+    bool explanation;
     activetool tool = activetool.bumper;
+
+    //Coin Value
+    public int value =5;
+
     [MenuItem("JB Tools/Key Objects")]
 
 
@@ -84,6 +88,13 @@ public class JBObjects : EditorWindow
                     secondPosition = new Vector3(tempObject.transform.position.x - 1, tempObject.transform.position.y, tempObject.transform.position.z);
                     tempObject.GetComponent<TempObject>().isDrawingRange = false ;
                 }
+                if (GUILayout.Button("Coin Tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
+                {
+                    DestroyTemporaryMarkersIfPresent();
+                    tool = activetool.coin;
+                    tempObject.GetComponent<TempObject>().isDrawingRange = false;
+                }
+
             }
             using (var vertical = new GUILayout.VerticalScope())
             {
@@ -97,6 +108,7 @@ public class JBObjects : EditorWindow
                 GameObject entryDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EntryDoor.prefab", typeof(GameObject));
                 GameObject movingObjectPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/MovingObject.prefab", typeof(GameObject));
                 GameObject tempDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/TempDoor.prefab", typeof(GameObject));
+                GameObject coinPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Pickup.prefab", typeof(GameObject));
                 //this creates a temporary gameobject
                 tempObject = GameObject.Find("tempObject");
                 if (!GameObject.Find("tempObject"))
@@ -122,6 +134,8 @@ public class JBObjects : EditorWindow
                         {
                             GameObject bumper = Instantiate(bumperPrefab);
                             GetPosition(bumper);
+                            bumper.transform.parent = GameObject.Find("Level Container").transform;
+                            bumper.transform.localScale = bumperPrefab.transform.localScale;
                             bumper.GetComponent<Bumper>().bumpPower = range;
                         }
                         break;
@@ -145,6 +159,8 @@ public class JBObjects : EditorWindow
                         {
                             GameObject hazard = Instantiate(hazardPrefab);
                             GetPosition(hazard);
+                            hazard.transform.parent = GameObject.Find("Level Container").transform;
+                            hazard.transform.localScale = hazardPrefab.transform.localScale;
                             Hazard hazardControls = hazard.GetComponent<Hazard>();
                             hazardControls.attackRadius = range * 2;
                             hazardControls.timeBetweenAttacks = timeBetweenActions;
@@ -163,6 +179,7 @@ public class JBObjects : EditorWindow
                                 if (hit.collider != null)
                                 {
                                     GameObject door = Instantiate(exitDoorPrefab, hit.point, Quaternion.identity);
+                                    door.transform.parent = GameObject.Find("Level Container").transform;
                                 }
                                 else
                                 {
@@ -175,6 +192,7 @@ public class JBObjects : EditorWindow
                                 if (hit.collider != null)
                                 {
                                     GameObject door = Instantiate(entryDoorPrefab, hit.point, Quaternion.identity);
+                                    door.transform.parent = GameObject.Find("Level Container").transform;
                                 }
                                 else
                                 {
@@ -195,10 +213,6 @@ public class JBObjects : EditorWindow
                             tempPosTwo = CreateTempMarker("TempMarkerTwo", tempPosTwo, Color.green);
                             tempPosTwo.transform.position = secondPosition;
                         }
-                        
-                        //firstPosition = EditorGUILayout.Vector3Field("Starting Position", firstPosition);
-                        //secondPosition = EditorGUILayout.Vector3Field("Ending Position", secondPosition);
-                       // tempObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
                         speed = EditorGUILayout.FloatField("Speed", speed);
                          firstPosition = tempPosOne.transform.position;
                          secondPosition = tempPosTwo.transform.position;
@@ -224,14 +238,63 @@ public class JBObjects : EditorWindow
                         if (GUILayout.Button("Create Moving Object"))
                         {
                             GameObject movingObject = Instantiate(movingObjectPrefab);
+                            movingObject.transform.parent = GameObject.Find("Level Container").transform;
                             Selection.activeGameObject = movingObject;
                             AssignTheValues(movingObject.GetComponent<MoverOverTime>());
                             
                         }
                         break;
+                    case activetool.coin:
+
+
+                        using (var horizontalScope = new GUILayout.HorizontalScope())
+                        {
+                            value = EditorGUILayout.IntField("Value: ", value);
+                        }
+                        if (GUILayout.Button("Create Coin"))
+                        {
+                            GameObject coin = Instantiate(coinPrefab);
+                            coin.transform.parent = GameObject.Find("Level Container").transform;
+                            GetPosition(coin);
+                            coin.transform.localScale = coinPrefab.transform.localScale;
+                            coin.GetComponent<Pickup>().value = value;
+                        }
+                        break;
 
                 }
                 GUILayout.FlexibleSpace();
+            }
+        }
+
+        if (explanation)
+        {
+            GUILayout.Label("Instructions:");
+
+
+            GUILayout.TextArea($"Choose which object to create using the buttons on the left of the screen. {Environment.NewLine}" +
+                $"Choose where to spawn the object using the temporary object in the editor window.{Environment.NewLine}" +
+                $"Different objects have different parameters available to them.{Environment.NewLine}" +
+                $"Parameters can also be edited using the handles on the temporary object{Environment.NewLine}" +
+                 $"The temporary object has a reference to the highest possible jump distance the player can make. {Environment.NewLine}" +
+                $"Press the create button to spawn that object into the scene at the temporary objects position{ Environment.NewLine}{ Environment.NewLine}" +
+                $"1 - Bumper only has a range setting{Environment.NewLine}" +
+                $"2 - Hazards have settings for time between attacks and duration of the attack{Environment.NewLine}" +
+                $"3 - Doors snap to the closest available surface below the temporary object{Environment.NewLine}" +
+                $"4 - Moving platform tool has the option to create a new object or to make a selected object into a moving one{Environment.NewLine}" +
+                $"4 - Coin Object tool has the option tadjust a coins value{Environment.NewLine}" +
+                $"----- Each object has more options in their inspector once spawned -----{Environment.NewLine}" +
+                $"A checklist has also been implemented into the top of the window, it displays a warning if some key elements of the level are missing such as doors."
+               );
+        }
+        if (GUILayout.Button("Show Explanation", GUILayout.MinWidth(140), GUILayout.MaxWidth(140), GUILayout.Height(20)))
+        {
+            if (!explanation)
+            {
+                explanation = true;
+            }
+            else
+            {
+                explanation = false;
             }
         }
     }

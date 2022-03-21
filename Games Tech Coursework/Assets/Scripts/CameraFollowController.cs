@@ -5,14 +5,7 @@ using UnityEngine;
 public class CameraFollowController : MonoBehaviour
 {
     GameObject Player;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    [SerializeField] float offset;
     void LateUpdate()
     {
 
@@ -25,7 +18,7 @@ public class CameraFollowController : MonoBehaviour
             if (Player != null)
             {
                
-                transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y, transform.position.z);
+                transform.position = new Vector3(Player.transform.position.x, Player.transform.position.y,offset);
             }
         }
     }

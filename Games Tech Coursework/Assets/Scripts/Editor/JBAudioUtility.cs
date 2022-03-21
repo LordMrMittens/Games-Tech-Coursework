@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
-
+using System;
 [ExecuteAlways]
 
 public class JBAudioUtility : EditorWindow
@@ -16,6 +16,7 @@ public class JBAudioUtility : EditorWindow
     bool isPaused;
     float playTime;
     Vector2 scrollPos;
+    bool explanation;
     [MenuItem("JB Tools/Audio Utility")]
     
     static void OpenWindow()
@@ -137,6 +138,32 @@ public class JBAudioUtility : EditorWindow
                 {
                     DestroyImmediate(audioSource.gameObject);
                 }
+            }
+        }
+        GUILayout.FlexibleSpace();
+        if (explanation)
+        {
+            GUILayout.Label("Instructions:");
+
+
+            GUILayout.TextArea($"This tool automatically adds audio elements at 'Assets/Resources/Audio' {Environment.NewLine}" +
+                $"press play to play pause or stop to control playback of any audio clip.{Environment.NewLine}" +
+                $"The slider can be manipulated to listen to a specific section of the clip but only once that clip is already playing, or is paused.{Environment.NewLine}" +
+                $"The create audio object creates a new audio object with that clip{Environment.NewLine}" +
+                $"The add audio to selected object adds an audio source with that clip{Environment.NewLine}" +
+                $"Any audio created with this tool will also attach a previewer to the object, allowing for quick preview of settings such as pitch{Environment.NewLine}" +
+                $"The remove button removes the clip from the collection but not from unity, used to create a shortlist");
+        }
+
+        if (GUILayout.Button("Show Explanation", GUILayout.MinWidth(140), GUILayout.MaxWidth(140), GUILayout.Height(20)))
+        {
+            if (!explanation)
+            {
+                explanation = true;
+            }
+            else
+            {
+                explanation = false;
             }
         }
         GUILayout.EndScrollView();

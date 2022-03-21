@@ -55,15 +55,15 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\MoverOverTime.cs" />
     <Compile Include="Assets\Scripts\Bumper.cs" />
-    <Compile Include="Assets\Scripts\Detector.cs" />
+    <Compile Include="Assets\Scripts\CameraFollowController.cs" />
     <Compile Include="Assets\Scripts\HazardHitDetector.cs" />
     <Compile Include="Assets\Scripts\MovementController.cs" />
+    <Compile Include="Assets\Scripts\MenuController.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\Editor\JBTools.cs" />
     <Compile Include="Assets\Scripts\Editor\JBObjects.cs" />
     <Compile Include="Assets\Scripts\Hazard.cs" />
     <Compile Include="Assets\Scripts\Editor\JBAudioUtility.cs" />
-    <Compile Include="Assets\Scripts\Editor\MapCreator.cs" />
+    <Compile Include="Assets\Scripts\TempMarker.cs" />
     <Compile Include="Assets\Scripts\LevelExitTrigger.cs" />
     <Compile Include="Assets\Scripts\TempObject.cs" />
     <Compile Include="Assets\Scripts\PointCounter.cs" />
@@ -71,10 +71,7 @@
     <Compile Include="Assets\Scripts\Editor\JBMapCreator.cs" />
     <Compile Include="Assets\Scripts\AudioPreviewer.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
-    <Compile Include="Assets\Scripts\Editor\AlignToPivot.cs" />
-    <Compile Include="Assets\Scripts\TempMarker.cs" />
-    <Compile Include="Assets\Scripts\CameraFollowController.cs" />
-    <Compile Include="Assets\Scripts\MenuController.cs" />
+    <Compile Include="Assets\Scripts\SceneTextManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Test.asmdef" />

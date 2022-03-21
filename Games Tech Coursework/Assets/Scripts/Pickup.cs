@@ -9,7 +9,7 @@ public class Pickup : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            GameManager.TGM.AddPoints(value);
+            GameManager.TGM.UpdateScore(value);
             Destroy(gameObject);
         }
     }

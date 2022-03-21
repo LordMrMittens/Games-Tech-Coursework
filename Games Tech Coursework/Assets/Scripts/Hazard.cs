@@ -41,7 +41,7 @@ public class Hazard : MonoBehaviour
     }
     void Update()
     {
-        hazardObject.transform.localScale = new Vector3(attackRadius, attackRadius, attackRadius);
+        hazardObject.transform.localScale = new Vector3(attackRadius/transform.localScale.x, attackRadius / transform.localScale.y, attackRadius / transform.localScale.z);
         if (isAttacking)
         {
             hazardObject.SetActive(true);

@@ -53,15 +53,7 @@
     <UnityVersion>2020.3.19f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Platformer Tileset\Materials\GradientSky\Scripts\GradientSkyObject.cs" />
-    <Compile Include="Assets\Platformer Tileset\Materials\GradientSky\Scripts\Common\GradientSkyCommon.cs" />
-    <Compile Include="Assets\Platformer Tileset\Materials\GradientSky\Scripts\GradientSkyCamera.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Platformer Tileset\Materials\UnlitVertexColour_Alpha.shader" />
-    <None Include="Assets\Platformer Tileset\Materials\GradientSky\Shaders\VertexColorCamera.shader" />
-    <None Include="Assets\Platformer Tileset\readme.txt" />
-    <None Include="Assets\Platformer Tileset\Materials\GradientSky\Shaders\VertexColorObject.shader" />
+    <Compile Include="Assets\SceneTextManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
