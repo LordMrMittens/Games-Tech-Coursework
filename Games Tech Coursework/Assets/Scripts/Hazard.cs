@@ -4,11 +4,6 @@ using UnityEngine;
 using UnityEditor;
 public class Hazard : MonoBehaviour
 {
-    /// <summary>
-    /// create a tool that shows the area of effect of attacks and can modify their range and timings (easy) with sliders?
-    /// 
-    /// display angry face and green happy face to dsplay attack?
-    /// </summary>
     public float attackRadius;
     public float timeBetweenAttacks;
     public float timeAttacking;
@@ -24,7 +19,6 @@ public class Hazard : MonoBehaviour
     float gradientChargeTimer = 0;
     private void Start()
     {
-   
         colorkey[0].color = neutral;
         colorkey[0].time = 0f;
         colorkey[1].color = charging;
@@ -83,7 +77,7 @@ public class hazardHandles : Editor
         float newAttackRadius = (float)Handles.ScaleValueHandle(haz.attackRadius, haz.transform.position + haz.transform.up * (haz.attackRadius/2), Quaternion.LookRotation(Vector3.up), 1, Handles.ConeHandleCap, 10);
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RecordObject(haz, "Changed moving platform positions");
+            Undo.RecordObject(haz, "Changed hazard settings");
             haz.attackRadius = newAttackRadius;
             haz.hazardObject.transform.localScale = new Vector3(haz.attackRadius, haz.attackRadius, haz.attackRadius);
         }

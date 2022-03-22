@@ -15,9 +15,8 @@ public class audioPreviewerButtons : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
         AudioPreviewer ap = (AudioPreviewer)target;
-        if (ap.source == null)
+        if (ap.source == null && ap.GetComponent<AudioSource>())
         {
             ap.source = ap.GetComponent<AudioSource>();
         }

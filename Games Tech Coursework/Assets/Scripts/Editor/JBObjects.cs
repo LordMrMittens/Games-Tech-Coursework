@@ -6,29 +6,19 @@ using System;
 public enum activetool { bumper, hazard, door, movingPlatform, coin }
 public class JBObjects : EditorWindow
 {
-    //moving platform
     public Vector3 firstPosition;
     public Vector3 secondPosition;
     public float speed = .5f;
-
-    //Range objects
     public float range = 1;
     public float timeBetweenActions = 8;
     public float timeAttacking = 1;
-
-    //temporary objects
     GameObject tempPosOne;
     GameObject tempPosTwo;
     public GameObject tempObject;
-
     bool explanation;
     activetool tool = activetool.bumper;
-
-    //Coin Value
-    public int value =5;
-
-    [MenuItem("JB Tools/Key Objects")]
-
+    public int coinValue = 5;
+    [MenuItem("JB Tools/Key Objects %#o")]
 
     static void OpenWindow()
     {
@@ -42,9 +32,9 @@ public class JBObjects : EditorWindow
     }
     private void OnGUI()
     {
+        SpawnTemporaryObject();
         using (var vertical = new GUILayout.VerticalScope())
         {
-            //This is the checklist
             if (!GameObject.FindGameObjectWithTag("EntryDoor"))
             {
                 GUILayout.Label("This level is lacking an entry point.");
@@ -57,74 +47,29 @@ public class JBObjects : EditorWindow
             {
                 GUILayout.Label("This level is lacking point Pickups.");
             }
+            else
+            {
+                int points = 0;
+                foreach (var Pickup in FindObjectsOfType<Pickup>())
+                {
+                    points += Pickup.value;
+                }
+                GUILayout.Label($"This level currently have {points} points");
+            }
         }
         using (var horizontal = new GUILayout.HorizontalScope())
         {
             using (var vertical = new GUILayout.VerticalScope())
             {
-                //this is buttons to choose a type of object
-                if (GUILayout.Button("Bumper tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
-                {
-                    DestroyTemporaryMarkersIfPresent();
-                    tool = activetool.bumper;
-                    tempObject.GetComponent<TempObject>().isDrawingRange = true;
-                }
-                if (GUILayout.Button("Hazard tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
-                {
-                    DestroyTemporaryMarkersIfPresent();
-                    tool = activetool.hazard;
-                    tempObject.GetComponent<TempObject>().isDrawingRange = true;
-                }
-                if (GUILayout.Button("Door tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
-                {
-                    DestroyTemporaryMarkersIfPresent();
-                    tool = activetool.door;
-                    tempObject.GetComponent<TempObject>().isDrawingRange = false;
-                }
-                if (GUILayout.Button("Moving platform tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
-                {
-                    tool = activetool.movingPlatform;
-                    firstPosition = new Vector3(tempObject.transform.position.x + 1, tempObject.transform.position.y, tempObject.transform.position.z);
-                    secondPosition = new Vector3(tempObject.transform.position.x - 1, tempObject.transform.position.y, tempObject.transform.position.z);
-                    tempObject.GetComponent<TempObject>().isDrawingRange = false ;
-                }
-                if (GUILayout.Button("Coin Tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
-                {
-                    DestroyTemporaryMarkersIfPresent();
-                    tool = activetool.coin;
-                    tempObject.GetComponent<TempObject>().isDrawingRange = false;
-                }
-
+                ChooseToolPanel();
             }
             using (var vertical = new GUILayout.VerticalScope())
             {
 
-
-                //this assigns prefabs
-                GameObject temporarySprite = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Scripts/Editor/TempObjects/TempObject.prefab", typeof(GameObject));
-                GameObject bumperPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Bumper.prefab", typeof(GameObject));
-                GameObject hazardPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Hazard.prefab", typeof(GameObject));
-                GameObject exitDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/ExitDoor.prefab", typeof(GameObject));
-                GameObject entryDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EntryDoor.prefab", typeof(GameObject));
-                GameObject movingObjectPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/MovingObject.prefab", typeof(GameObject));
-                GameObject tempDoorPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/TempDoor.prefab", typeof(GameObject));
-                GameObject coinPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Pickup.prefab", typeof(GameObject));
-                //this creates a temporary gameobject
-                tempObject = GameObject.Find("tempObject");
-                if (!GameObject.Find("tempObject"))
-                {
-                    tempObject = new GameObject();
-                    tempObject.AddComponent<TempObject>();
-                    tempObject.name = "tempObject";
-                    Selection.activeGameObject = tempObject;
-                }
                 GUILayout.Label("Object Creation Settings");
                 switch (tool)
                 {
-
                     case activetool.bumper:
-
-
                         using (var horizontalScope = new GUILayout.HorizontalScope())
                         {
                             range = Slider("Range: ", range);
@@ -132,10 +77,7 @@ public class JBObjects : EditorWindow
                         }
                         if (GUILayout.Button("Create Bumper"))
                         {
-                            GameObject bumper = Instantiate(bumperPrefab);
-                            GetPosition(bumper);
-                            bumper.transform.parent = GameObject.Find("Level Container").transform;
-                            bumper.transform.localScale = bumperPrefab.transform.localScale;
+                            GameObject bumper = SpawnObject("Assets/Prefabs/Bumper.prefab");
                             bumper.GetComponent<Bumper>().bumpPower = range;
                         }
                         break;
@@ -143,7 +85,6 @@ public class JBObjects : EditorWindow
                     case activetool.hazard:
                         using (var horizontalScope = new GUILayout.HorizontalScope())
                         {
-
                             range = Slider("Range: ", range);
                             tempObject.GetComponent<TempObject>().range = range;
                         }
@@ -157,10 +98,7 @@ public class JBObjects : EditorWindow
                         }
                         if (GUILayout.Button("Create Hazard"))
                         {
-                            GameObject hazard = Instantiate(hazardPrefab);
-                            GetPosition(hazard);
-                            hazard.transform.parent = GameObject.Find("Level Container").transform;
-                            hazard.transform.localScale = hazardPrefab.transform.localScale;
+                            GameObject hazard = SpawnObject("Assets/Prefabs/Hazard.prefab");
                             Hazard hazardControls = hazard.GetComponent<Hazard>();
                             hazardControls.attackRadius = range * 2;
                             hazardControls.timeBetweenAttacks = timeBetweenActions;
@@ -175,11 +113,11 @@ public class JBObjects : EditorWindow
 
                             if (GUILayout.Button("Create Exit Door"))
                             {
-                                
+
                                 if (hit.collider != null)
                                 {
-                                    GameObject door = Instantiate(exitDoorPrefab, hit.point, Quaternion.identity);
-                                    door.transform.parent = GameObject.Find("Level Container").transform;
+                                    GameObject door = SpawnObject("Assets/Prefabs/ExitDoor.prefab");
+                                    door.transform.position = hit.point;
                                 }
                                 else
                                 {
@@ -188,11 +126,11 @@ public class JBObjects : EditorWindow
                             }
                             if (GUILayout.Button("Create Entry Door"))
                             {
-                                
+
                                 if (hit.collider != null)
                                 {
-                                    GameObject door = Instantiate(entryDoorPrefab, hit.point, Quaternion.identity);
-                                    door.transform.parent = GameObject.Find("Level Container").transform;
+                                    GameObject door = SpawnObject("Assets/Prefabs/EntryDoor.prefab");
+                                    door.transform.position = hit.point;
                                 }
                                 else
                                 {
@@ -214,8 +152,8 @@ public class JBObjects : EditorWindow
                             tempPosTwo.transform.position = secondPosition;
                         }
                         speed = EditorGUILayout.FloatField("Speed", speed);
-                         firstPosition = tempPosOne.transform.position;
-                         secondPosition = tempPosTwo.transform.position;
+                        firstPosition = tempPosOne.transform.position;
+                        secondPosition = tempPosTwo.transform.position;
                         if (GUILayout.Button("Add component selected object"))
                         {
                             if (!Selection.activeGameObject)
@@ -237,30 +175,21 @@ public class JBObjects : EditorWindow
                         }
                         if (GUILayout.Button("Create Moving Object"))
                         {
-                            GameObject movingObject = Instantiate(movingObjectPrefab);
-                            movingObject.transform.parent = GameObject.Find("Level Container").transform;
-                            Selection.activeGameObject = movingObject;
+                            GameObject movingObject = SpawnObject("Assets/Prefabs/MovingObject.prefab");
                             AssignTheValues(movingObject.GetComponent<MoverOverTime>());
-                            
                         }
                         break;
                     case activetool.coin:
-
-
                         using (var horizontalScope = new GUILayout.HorizontalScope())
                         {
-                            value = EditorGUILayout.IntField("Value: ", value);
+                            coinValue = EditorGUILayout.IntField("Value: ", coinValue);
                         }
                         if (GUILayout.Button("Create Coin"))
                         {
-                            GameObject coin = Instantiate(coinPrefab);
-                            coin.transform.parent = GameObject.Find("Level Container").transform;
-                            GetPosition(coin);
-                            coin.transform.localScale = coinPrefab.transform.localScale;
-                            coin.GetComponent<Pickup>().value = value;
+                            GameObject coin = SpawnObject("Assets/Prefabs/Pickup.prefab");
+                            coin.GetComponent<Pickup>().value = coinValue;
                         }
                         break;
-
                 }
                 GUILayout.FlexibleSpace();
             }
@@ -269,8 +198,6 @@ public class JBObjects : EditorWindow
         if (explanation)
         {
             GUILayout.Label("Instructions:");
-
-
             GUILayout.TextArea($"Choose which object to create using the buttons on the left of the screen. {Environment.NewLine}" +
                 $"Choose where to spawn the object using the temporary object in the editor window.{Environment.NewLine}" +
                 $"Different objects have different parameters available to them.{Environment.NewLine}" +
@@ -299,54 +226,50 @@ public class JBObjects : EditorWindow
         }
     }
 
-    private GameObject CreateTempMarker(string name, GameObject markerObject, Color markerColor)
+    private void SpawnTemporaryObject()
     {
-        if (!GameObject.Find(name))
+        tempObject = GameObject.Find("tempObject");
+        if (!GameObject.Find("tempObject"))
         {
-            markerObject = new GameObject();
-            markerObject.name = name;
-            markerObject.AddComponent<TempMarker>().color = markerColor;
-            markerObject.transform.parent = tempObject.transform;
-            
-            return markerObject;
-        }
-        else
-        {
-            markerObject = GameObject.Find(name);
-            return markerObject;
+            tempObject = new GameObject();
+            tempObject.AddComponent<TempObject>();
+            tempObject.name = "tempObject";
+            Selection.activeGameObject = tempObject;
         }
     }
 
-    private float Slider(string label, float variable)
+    private void ChooseToolPanel()
     {
-        GUILayout.Label(label + variable.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-        variable = GUILayout.HorizontalSlider(variable, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
-        return variable;
-    }
-
-    private void GetPosition(GameObject temp)
-    {
-        temp.transform.position = tempObject.transform.position;
-        temp.transform.rotation = tempObject.transform.rotation;
-        temp.transform.localScale = tempObject.transform.localScale;
-    }
-
-    private void OnDestroy()
-    {
-        DestroyImmediate(GameObject.Find("tempObject"));
-        DestroyTemporaryMarkersIfPresent();
-        SceneView.duringSceneGui -= this.OnSceneGUI;
-    }
-
-    private void DestroyTemporaryMarkersIfPresent()
-    {
-        if (tempPosOne != null)
+        if (GUILayout.Button("Bumper tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
         {
-            DestroyImmediate(GameObject.Find("TempMarkerOne"));
+            DestroyTemporaryMarkersIfPresent();
+            tool = activetool.bumper;
+            tempObject.GetComponent<TempObject>().isDrawingRange = true;
         }
-        if (tempPosTwo != null)
+        if (GUILayout.Button("Hazard tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
         {
-            DestroyImmediate(GameObject.Find("TempMarkerTwo"));
+            DestroyTemporaryMarkersIfPresent();
+            tool = activetool.hazard;
+            tempObject.GetComponent<TempObject>().isDrawingRange = true;
+        }
+        if (GUILayout.Button("Door tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
+        {
+            DestroyTemporaryMarkersIfPresent();
+            tool = activetool.door;
+            tempObject.GetComponent<TempObject>().isDrawingRange = false;
+        }
+        if (GUILayout.Button("Moving platform tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
+        {
+            tool = activetool.movingPlatform;
+            firstPosition = new Vector3(tempObject.transform.position.x + 1, tempObject.transform.position.y, tempObject.transform.position.z);
+            secondPosition = new Vector3(tempObject.transform.position.x - 1, tempObject.transform.position.y, tempObject.transform.position.z);
+            tempObject.GetComponent<TempObject>().isDrawingRange = false;
+        }
+        if (GUILayout.Button("Coin Tool", GUILayout.MinWidth(150), GUILayout.MaxWidth(150), GUILayout.MinHeight(20), GUILayout.MaxHeight(20)))
+        {
+            DestroyTemporaryMarkersIfPresent();
+            tool = activetool.coin;
+            tempObject.GetComponent<TempObject>().isDrawingRange = false;
         }
     }
 
@@ -370,6 +293,68 @@ public class JBObjects : EditorWindow
         }
 
     }
+    private GameObject SpawnObject(string prefabLocation)
+    {
+        GameObject prefabToCreate = (GameObject)AssetDatabase.LoadAssetAtPath(prefabLocation, typeof(GameObject));
+        GameObject prefab = Instantiate(prefabToCreate);
+        GetPosition(prefab);
+        prefab.transform.parent = GameObject.Find("Level Container").transform;
+        prefab.transform.localScale = prefabToCreate.transform.localScale;
+        Undo.RegisterCreatedObjectUndo(prefab, "Created object");
+        return prefab;
+    }
+
+    private GameObject CreateTempMarker(string name, GameObject markerObject, Color markerColor)
+    {
+        if (!GameObject.Find(name))
+        {
+            markerObject = new GameObject();
+            markerObject.name = name;
+            markerObject.AddComponent<TempMarker>().color = markerColor;
+            markerObject.transform.parent = tempObject.transform;
+
+            return markerObject;
+        }
+        else
+        {
+            markerObject = GameObject.Find(name);
+            return markerObject;
+        }
+    }
+
+    private float Slider(string label, float variable)
+    {
+        GUILayout.Label(label + variable.ToString("0#.00"), GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+        variable = GUILayout.HorizontalSlider(variable, 0, 10, GUILayout.MinWidth(50), GUILayout.MaxWidth(300), GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+        return variable;
+    }
+
+    private void GetPosition(GameObject instance)
+    {
+        instance.transform.position = tempObject.transform.position;
+        instance.transform.rotation = tempObject.transform.rotation;
+        instance.transform.localScale = tempObject.transform.localScale;
+    }
+
+    private void OnDestroy()
+    {
+        DestroyImmediate(GameObject.Find("tempObject"));
+        DestroyTemporaryMarkersIfPresent();
+        SceneView.duringSceneGui -= this.OnSceneGUI;
+    }
+
+    private void DestroyTemporaryMarkersIfPresent()
+    {
+        if (tempPosOne != null)
+        {
+            DestroyImmediate(GameObject.Find("TempMarkerOne"));
+        }
+        if (tempPosTwo != null)
+        {
+            DestroyImmediate(GameObject.Find("TempMarkerTwo"));
+        }
+    }
+
     private void TryAssignValues()
     {
         MoverOverTime mover = Selection.activeGameObject.GetComponent<MoverOverTime>();
@@ -390,7 +375,7 @@ public class JBObjects : EditorWindow
             mover.positionTwo = secondPosition;
             mover.posTwo.transform.position = secondPosition;
             mover.speed = speed;
-           Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
+            Selection.activeGameObject.transform.position = Vector3.Lerp(firstPosition, secondPosition, 0.5f);
         }
     }
     private void CreateEmptyGameObjects()

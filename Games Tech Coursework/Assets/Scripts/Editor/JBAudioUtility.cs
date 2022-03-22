@@ -14,44 +14,37 @@ public class JBAudioUtility : EditorWindow
     AudioSource audioSource;
     AudioSource musicObject;
     bool isPaused;
-    float playTime;
     Vector2 scrollPos;
     bool explanation;
-    [MenuItem("JB Tools/Audio Utility")]
-    
+    [MenuItem("JB Tools/Audio Utility %#u")]
+
     static void OpenWindow()
     {
         EditorWindow.GetWindow(typeof(JBAudioUtility));
     }
     private void OnEnable()
     {
-        audioClips = Resources.LoadAll<AudioClip>("Audio");
-        if (audioClips != null && audioClips.Length > 0)
-        {
-            foreach (var clip in audioClips)
-            {
-                if (!clips.Contains(clip))
-                {
-                    clips.Add(clip);
-                }
-            }
-        }
+        LoadClipsList();
     }
+
+
+
     void OnGUI()
     {
+
         scrollPos = GUILayout.BeginScrollView(scrollPos, false, true, GUILayout.ExpandHeight(true));
         for (int i = 0; i < clips.Count; i++)
         {
             using (var vertical = new GUILayout.VerticalScope())
             {
                 float playhead = 0;
-            {
-                if (audioSource != null)
                 {
-                    playhead = audioSource.time;
+                    if (audioSource != null)
+                    {
+                        playhead = audioSource.time;
+                    }
                 }
-            }
-            clips[i] = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", clips[i], typeof(AudioClip), false, GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
+                clips[i] = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", clips[i], typeof(AudioClip), false, GUILayout.MinHeight(20), GUILayout.MaxHeight(20));
                 using (var horizontalScope = new GUILayout.HorizontalScope())
                 {
 
@@ -67,11 +60,12 @@ public class JBAudioUtility : EditorWindow
                     }
                 }
                 using (var horizontalScope = new GUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Remove"))
                 {
-                    clips.Remove(clips[i]);
-                }
+                    if (GUILayout.Button("Remove"))
+                    {
+                        //FileUtil.MoveFileOrDirectory(AssetDatabase.GetAssetPath(clips[i]), $"Assets/Resources/RejectedAudioClips/{clips[i].name}.mp3");
+                        clips.Remove(clips[i]);
+                    }
                     if (GUILayout.Button("Create Audio Object"))
                     {
 
@@ -90,7 +84,7 @@ public class JBAudioUtility : EditorWindow
                         else if (Selection.activeGameObject.GetComponent<AudioSource>())
                         {
                             Selection.activeGameObject.GetComponent<AudioSource>().clip = clips[i];
-                            CheckForAudioPreviewer();
+                            CheckForAudioPreviewer(Selection.activeGameObject);
                         }
                         else
                         {
@@ -99,38 +93,39 @@ public class JBAudioUtility : EditorWindow
                         }
                     }
                     GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Play"))
-                {
-                    audioSource = AssignClipToAudioSource("Temp Audio Source", audioSource, clips[i]);
-                    audioSource.Play();
-                    isPaused = false;
-                }
-                if (GUILayout.Button("Pause"))
-                {
-                    if (audioSource != null)
+                    if (GUILayout.Button("Play"))
                     {
-                        if (isPaused) { 
-                            audioSource.Play();
-                            isPaused = false;
-                        }
-                        else
+                        audioSource = AssignClipToAudioSource("Temp Audio Source", audioSource, clips[i]);
+                        audioSource.Play();
+                        isPaused = false;
+                    }
+                    if (GUILayout.Button("Pause"))
+                    {
+                        if (audioSource != null)
                         {
-                            isPaused = true;
-                            audioSource.Pause();
+                            if (isPaused)
+                            {
+                                audioSource.Play();
+                                isPaused = false;
+                            }
+                            else
+                            {
+                                isPaused = true;
+                                audioSource.Pause();
+                            }
                         }
-                    }
 
-                }
-                if (GUILayout.Button("Stop"))
-                {
-                    if (audioSource != null)
+                    }
+                    if (GUILayout.Button("Stop"))
                     {
-                        audioSource.Stop();
-                        DestroyImmediate(audioSource.gameObject);
-                    }
+                        if (audioSource != null)
+                        {
+                            audioSource.Stop();
+                            DestroyImmediate(audioSource.gameObject);
+                        }
 
+                    }
                 }
-            }
             }
             if (audioSource && !isPaused)
             {
@@ -140,7 +135,12 @@ public class JBAudioUtility : EditorWindow
                 }
             }
         }
-        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Refresh Media Database"))
+        {
+            AssetDatabase.Refresh();
+            LoadClipsList();
+        }
+            GUILayout.FlexibleSpace();
         if (explanation)
         {
             GUILayout.Label("Instructions:");
@@ -167,6 +167,7 @@ public class JBAudioUtility : EditorWindow
             }
         }
         GUILayout.EndScrollView();
+
     }
 
     private string ClipDuration(float clipLength)
@@ -197,6 +198,7 @@ public class JBAudioUtility : EditorWindow
         {
             source = new GameObject().AddComponent<AudioSource>();
             source.name = objectName;
+            Undo.RegisterCreatedObjectUndo(source, "Created object");
         }
         else
         {
@@ -204,6 +206,20 @@ public class JBAudioUtility : EditorWindow
         }
         source.clip = clip;
         return source;
+    }
+    private void LoadClipsList()
+    {
+        audioClips = Resources.LoadAll<AudioClip>("Audio");
+        if (audioClips != null && audioClips.Length > 0)
+        {
+            foreach (var clip in audioClips)
+            {
+                if (!clips.Contains(clip))
+                {
+                    clips.Add(clip);
+                }
+            }
+        }
     }
 }
 

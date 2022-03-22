@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     Transform levelContainer;
     private void Start()
     {
+        time = 0;
         if (SceneManager.GetActiveScene().name != "Main Menu")
         {
             DontDestroyOnLoad(this);
@@ -60,14 +61,12 @@ public class GameManager : MonoBehaviour
             if (player == null )
             {
                 player = Instantiate(playerPrefab, new Vector3(playerSpawnPoint.position.x, playerSpawnPoint.position.y + .5f, playerSpawnPoint.position.z), Quaternion.identity);
-                Debug.Log(player.name);
                 player.transform.parent = levelContainer;
                 playerIsalive = true;
                 respawnTimer = 0;
             }
             if (player != null && playerIsalive == false)
             {
-
                 respawnTimer += Time.deltaTime;
                 if (respawnTimer > timeToRespawn)
                 {
@@ -83,7 +82,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
     private void UpdateClock()
     {
         secondsCounter += Time.deltaTime;
@@ -94,7 +92,6 @@ public class GameManager : MonoBehaviour
             secondsCounter %= 60;
         }
     }
-
     public void UpdateScore(int points)
     {
         score += points;
@@ -103,5 +100,10 @@ public class GameManager : MonoBehaviour
     public void LoadScene(int scene)
     {
         SceneManager.LoadScene(scene);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

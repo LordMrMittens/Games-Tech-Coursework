@@ -26,12 +26,3 @@ public class TempObject : MonoBehaviour
         }
     }
 }
-[CustomEditor(typeof(TempObject)), CanEditMultipleObjects]
-public class TempObjectHandles : Editor
-{
-    private void OnSceneGUI()
-    {
-        TempObject to = (TempObject)target;
-        
-    }
-}

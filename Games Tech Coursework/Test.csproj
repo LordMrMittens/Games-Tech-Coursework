@@ -66,16 +66,16 @@
     <Compile Include="Assets\Scripts\TempMarker.cs" />
     <Compile Include="Assets\Scripts\LevelExitTrigger.cs" />
     <Compile Include="Assets\Scripts\TempObject.cs" />
-    <Compile Include="Assets\Scripts\PointCounter.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\SceneTextManager.cs" />
     <Compile Include="Assets\Scripts\Editor\JBMapCreator.cs" />
     <Compile Include="Assets\Scripts\AudioPreviewer.cs" />
     <Compile Include="Assets\Scripts\Pickup.cs" />
-    <Compile Include="Assets\Scripts\SceneTextManager.cs" />
+    <Compile Include="Assets\Scripts\SoundObject.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Scripts\Test.asmdef" />
-    <None Include="Assets\Scripts\Editor\TestReference.asmref" />
+    <None Include="Assets\Scripts\References.asmdef" />
+    <None Include="Assets\Scripts\Editor\Reference.asmref" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

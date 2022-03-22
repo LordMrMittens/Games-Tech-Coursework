@@ -6,9 +6,10 @@ using UnityEditor;
 public class Bumper : MonoBehaviour
 {
     public float bumpPower;
-    public float timeBetweenBumps; //make these sliders?
+    public float timeBetweenBumps;
     public float bumpTimer = 0;
     public bool canBump = false;
+    [SerializeField] AudioSource BumpSound;
     void Update()
     {
         bumpTimer += Time.deltaTime;
@@ -21,6 +22,7 @@ public class Bumper : MonoBehaviour
     {
         Vector3 direction = (collision.transform.position - transform.position).normalized;
         collision.gameObject.GetComponent<Rigidbody2D>().AddForce(direction * bumpPower, ForceMode2D.Impulse);
+        BumpSound.Play();
     }
 }
 [CustomEditor(typeof(Bumper)), CanEditMultipleObjects]
@@ -37,7 +39,7 @@ public class bumperHandles : Editor
         float newBumpPower = (float)Handles.ScaleValueHandle(bump.bumpPower, bump.transform.position + bump.transform.up * bump.bumpPower, Quaternion.identity, 1, Handles.CircleHandleCap, 1);
         if (EditorGUI.EndChangeCheck())
         {
-            Undo.RecordObject(bump, "Changed moving platform positions");
+            Undo.RecordObject(bump, "Changed bumper settings");
             bump.bumpPower = newBumpPower;
         }
     }
