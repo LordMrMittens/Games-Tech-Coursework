@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+   
     [SerializeField]GameObject playerPrefab;
     public GameObject player;
     public int score;
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
     public void LoadScene(int scene)
     {
         SceneManager.LoadScene(scene);
+        Time.timeScale = 1;
     }
 
     public void QuitGame()

@@ -8,7 +8,6 @@ using UnityEditor;
 [CustomEditor(typeof(JBMapCreator))]
 public class JBMapCreator : EditorWindow
 {
-    private UnityEngine.Object[] mapObjects;
     public List<MapFiller> instances = new List<MapFiller>();
     private Dictionary<Color, GameObject> MapTileDic;
     public Texture2D map;
@@ -19,17 +18,15 @@ public class JBMapCreator : EditorWindow
     bool isGameplay;
     GameObject mapPivotPoint;
     GameObject levelContainer;
-
+    Vector2 scrollPos;
     bool explanation;
-    [MenuItem("JB Tools/Map Creator utility %#m")]
+    [MenuItem("JB Tools/Map Creator Utility %#m")]
     static void OpenWindow()
     {
         EditorWindow.GetWindow(typeof(JBMapCreator));
     }
     private void OnEnable()
     {
-        mapObjects = Resources.LoadAll("MapObjects", typeof(GameObject));
-
         target = this;
         so = new SerializedObject(target);
         mapProperties = so.FindProperty("instances");
@@ -37,64 +34,70 @@ public class JBMapCreator : EditorWindow
 
     private void OnGUI()
     {
-        using (var horizontal = new GUILayout.HorizontalScope())
-        {
-            using (var vertical = new GUILayout.VerticalScope())
-            {
-                EditorGUILayout.PropertyField(mapProperties, true);
-            }
-            if (instances.Count > 0)
-            {
-                StartDictionary();
-            }
-        }
-        using (var horizontal = new GUILayout.HorizontalScope())
+        using (var verticalmain = new GUILayout.VerticalScope())
         {
 
-            using (var vertical = new GUILayout.VerticalScope())
+            scrollPos = GUILayout.BeginScrollView(scrollPos, false, true, GUILayout.ExpandHeight(true));
+            using (var horizontal = new GUILayout.HorizontalScope())
             {
-                isGameplay = EditorGUILayout.Toggle("Gameplay Object Map: ", isGameplay);
-                spaceBetweenTiles = EditorGUILayout.FloatField("Distance between Tiles: ", spaceBetweenTiles, GUILayout.MinWidth(200), GUILayout.MaxWidth(200), GUILayout.Height(20));
+                using (var vertical = new GUILayout.VerticalScope())
+                {
+                    EditorGUILayout.PropertyField(mapProperties, true);
+                }
+                if (instances.Count > 0)
+                {
+                    StartDictionary();
+                }
             }
-            map = TextureField("Texture map", map);
-        }
-        using (var horizontal = new GUILayout.HorizontalScope())
-        {
+            using (var horizontal = new GUILayout.HorizontalScope())
+            {
+
+                using (var vertical = new GUILayout.VerticalScope())
+                {
+                    isGameplay = EditorGUILayout.Toggle("Gameplay Object Map: ", isGameplay);
+                    spaceBetweenTiles = EditorGUILayout.FloatField("Distance between Tiles: ", spaceBetweenTiles, GUILayout.MinWidth(200), GUILayout.MaxWidth(200), GUILayout.Height(20));
+                }
+                map = TextureField("Texture map", map);
+            }
+            using (var horizontal = new GUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Create Map", GUILayout.MinWidth(140), GUILayout.MaxWidth(200), GUILayout.Height(30)))
+                {
+
+                    CreateMap();
+                }
+                GUILayout.FlexibleSpace();
+            }
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Create Map", GUILayout.MinWidth(140), GUILayout.MaxWidth(200), GUILayout.Height(30)))
+            if (explanation)
             {
+                GUILayout.Label("Instructions:");
 
-                CreateMap();
+
+                GUILayout.TextArea($"Drag and drop level piece prefabs (by default in Assets/Resources/MapObjects) into the map tile slots above. {Environment.NewLine}" +
+                    $"Choose a colour to associate it with that specific prefab, the alpha of any colour chosen is considered in the colour association.{Environment.NewLine}" +
+                    $"Using the texture picker select a texture to be used as to create the map. {Environment.NewLine}" +
+                    $"Textures must be set to default texture ype and set to be read/write enabled in their inspector, point filter mode is recommended{Environment.NewLine}" +
+                    $"Select if object is a gameplay object rather than a map object, this will determine how the object will be parented. {Environment.NewLine}" +
+                    $" Finally, choose the spacing between tiles.{Environment.NewLine}" +
+                    $"Pressing create map should create a map and parent it to a pivot point which is already controllable by the player");
             }
-            GUILayout.FlexibleSpace();
-        }
-        GUILayout.FlexibleSpace();
-        if (explanation)
-        {
-            GUILayout.Label("Instructions:");
 
-
-            GUILayout.TextArea($"Drag and drop level piece prefabs (by default in Assets/Resources/MapObjects) into the map tile slots above. {Environment.NewLine}" +
-                $"Choose a colour to associate it with that specific prefab, the alpha of any colour chosen is considered in the colour association.{Environment.NewLine}" +
-                $"Using the texture picker select a texture to be used as to create the map. {Environment.NewLine}" +
-                $"Textures must be set to default texture ype and set to be read/write enabled in their inspector, point filter mode is recommended{Environment.NewLine}" +
-                $"Select if object is a gameplay object rather than a map object, this will determine how the object will be parented. {Environment.NewLine}" +
-                $" Finally, choose the spacing between tiles.{Environment.NewLine}" +
-                $"Pressing create map should create a map and parent it to a pivot point which is already controllable by the player");
-        }
-
-        if (GUILayout.Button("Show Explanation", GUILayout.MinWidth(140), GUILayout.MaxWidth(140), GUILayout.Height(20)))
-        {
-            if (!explanation)
+            if (GUILayout.Button("Show Explanation", GUILayout.MinWidth(140), GUILayout.MaxWidth(140), GUILayout.Height(20)))
             {
-                explanation = true;
+                if (!explanation)
+                {
+                    explanation = true;
+                }
+                else
+                {
+                    explanation = false;
+                }
             }
-            else
-            {
-                explanation = false;
-            }
+            GUILayout.EndScrollView();
         }
-    }
+        }
     private static Texture2D TextureField(string name, Texture2D texture)
     {
         GUILayout.BeginVertical();
@@ -169,8 +172,11 @@ public class JBMapCreator : EditorWindow
                 }
 
             }
+
         }
+        
     }
+
 }
 [Serializable]
 public class MapFiller

@@ -18,7 +18,7 @@ public class JBObjects : EditorWindow
     bool explanation;
     activetool tool = activetool.bumper;
     public int coinValue = 5;
-    [MenuItem("JB Tools/Key Objects %#o")]
+    [MenuItem("JB Tools/Key Objects Utility %#o")]
 
     static void OpenWindow()
     {

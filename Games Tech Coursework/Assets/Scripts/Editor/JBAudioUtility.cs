@@ -26,9 +26,6 @@ public class JBAudioUtility : EditorWindow
     {
         LoadClipsList();
     }
-
-
-
     void OnGUI()
     {
 
@@ -63,7 +60,6 @@ public class JBAudioUtility : EditorWindow
                 {
                     if (GUILayout.Button("Remove"))
                     {
-                        //FileUtil.MoveFileOrDirectory(AssetDatabase.GetAssetPath(clips[i]), $"Assets/Resources/RejectedAudioClips/{clips[i].name}.mp3");
                         clips.Remove(clips[i]);
                     }
                     if (GUILayout.Button("Create Audio Object"))
